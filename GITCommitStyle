@@ -1,0 +1,8 @@
+GIT Commit Style [for the same _standard_ usage]
+
+[Context]: [RealMessage]
+
+examples:
+HectorTests.BasicExamples: Example of using KeyIterator
+HectorTests.BasicExamples: Modified the order of object initializing
+HectorTests.MrtsDataModel: Added the SensorData class which will be serialized and added to column value
