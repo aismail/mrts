@@ -1,8 +1,23 @@
 GIT Commit Style [for the same _standard_ usage]
 
-[Context]: [RealMessage]
+[Context - if referes to a particular test or example]: [RealMessage]
+	- API examples & tests [Cassandra Thrift, Hector, Hadoop]
+	- DataModels examples & tests
+	- Different types of time-series ML algorithms
 
 examples:
 HectorTests.BasicExamples: Example of using KeyIterator
 HectorTests.BasicExamples: Modified the order of object initializing
 HectorTests.MrtsDataModel: Added the SensorData class which will be serialized and added to column value
+HectorTests: Setted MrtsDataModel project folder: adding README file
+HadoopTests: Added the folder for java-hadoop test & examples projects
+SerialTests: Added the folder for serial time-series alg. test
+SerialTests.ANLBackP: Added the folder for ANL Back Propagation test project+ README file
+SerialTests.ANLBackP: Updated BackPMain.java with __whatever__ :D
+
+[No context - if refers to the head of the _branch_] 
+
+examples:
+Modified the README file
+Added TmrtsProj folder for main-project tests
+Modified the data-window training, now we are querying a much little time period.
