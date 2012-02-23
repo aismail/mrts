@@ -1,5 +1,4 @@
 import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.OrderedRows;
@@ -25,9 +24,9 @@ public class GetRangeSlicesKeysOnly {
     
     public static void main(String[] args) throws Exception {
         
-    	 Cluster cluster = HFactory.getOrCreateCluster("ExampleCluster", new CassandraHostConfigurator("89.45.248.151:9160"));
+    	 Cluster cluster = HFactory.getOrCreateCluster("ExampleCluster", "emerald:9160");
 
-         Keyspace keyspaceOperator = HFactory.createKeyspace("Example1", cluster);
+         Keyspace keyspaceOperator = HFactory.createKeyspace("Examples", cluster);
                 
         try { 
         	
