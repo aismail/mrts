@@ -3,11 +3,27 @@ Implementing a model for time-series database using Hector API
 
 _SIMPLE_APPROACH_
 
-[Needs in depth testing]
+DB Model:
+- rows = timestamp
+- columns = 
+	column-name = data-name, 
+	column-value = data-value
 
-Required:
+Usage:
+- git clone
+- integrate packages into you project that uses time-series database as we desgined it
+
+Packages inside the project:
+mrtsdb (map-reduce time-series database) - connection, db schema create, CRUD operations
+mrtsis (map-reduce time-series input stream) - readers, parsers for our input-data
+mrtsdm (map-reduce time-series datamodel) - model for our sensors' data
+
+TODO Required:
 1: Data Model [DONE] -> SensorData class
 2: Describe database schema [DONE] -> CassTSDB.createSchema()
 3: Create necessary CRUD methods [DONE] -> ICassTSDB class
 4: To CSV parser [DONE] -> ToCSVParser class
 5: CSV Reader [DONE] -> SensorIS class
+
+[Needs in depth testing]
+
