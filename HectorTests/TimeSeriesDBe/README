@@ -11,7 +11,7 @@ DB Model:
 
 Usage:
 - git clone
-- integrate packages into you project that uses time-series database as we desgined it
+- integrate packages into a project that uses time-series database as we desgined it
 
 Packages inside the project:
 mrtsdb (map-reduce time-series database) - connection, db schema create, CRUD operations
