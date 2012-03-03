@@ -40,7 +40,7 @@ demo4 - ECG anomalies detection (Arrythmia detection)
 			demo4_2.serial (1h15min),
 			demo4_3.serial (2h19min),
 			=> ~1h30m 
-		- train results -> in beats.txt (1 for Normal beat, -1 vor Ventricular beat)
+		- tests results -> in beats.txt (1 for Normal beat, -1 for Ventricular beat)
 network - BP feedfwd-netw implementation using the graph model (not matrix model)
 
 TODO Required:
