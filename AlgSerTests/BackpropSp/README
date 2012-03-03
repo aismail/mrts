@@ -1,0 +1,48 @@
+
+Implementing ANN Backpropagation algorithm
+
+# Author: G.S. Cole (gsc@digiburo.com)
+
+JavaDoc: http://backprop1.sourceforge.net/doc/javadoc/com/digiburo/backprop1/package-summary.html
+SourcesAvailableAt: http://sourceforge.net/projects/backprop1
+
+Description:
+
+"backprop1" provides support for a simple three layer backpropagation neural network implemented in Java.
+
+"backprop1" is hosted on Source Forge at http://sourceforge.net/projects/backprop1
+
+I have created some small demonstration programs to validate backprop1. There are demonstrations of point classification (demo1), the XOR problem (demo2) and character recognition (demo3). You might find these useful examples of how backprop1 might be used.
+
+"backprop1" is free for your use. There is no cost, no warranty, no support, nothing but good wishes and java sources. If you do something really neat please send an email about your success. Good luck with your project. 
+
+Build:
+1) Edit build.properties (change base.dir to reflect the proper path).
+2) ant compile
+3) (optional) ant javadoc
+
+Usage:
+- GenerateDatum -> generates data for training [output: demoX.trn]
+- Trainer -> trains the network and saves it - serialized [ouput: demoX.serial]
+- Tester -> tests the network on data 
+
+Packages inside the project:
+demo1 - point classification (below/above a line)
+demo2 - XOR problem
+demo3 - character recognition
+demo4 - ECG anomalies detection (Arrythmia detection)
+	- following the article from http://biomed.uninet.edu/2010/n3/ayub.html
+		- ECG dataset: sensor.stream.csv
+		- ECG annotations set: ann.stream.csv
+		- ECG test set: test.stream.csv
+		- 3 trained BP feedfwd-networks: 
+			demo4_1.serial (4min), 
+			demo4_2.serial (1h15min),
+			demo4_3.serial (2h19min),
+			=> ~1h30m 
+		- train results -> in beats.txt (1 for Normal beat, -1 vor Ventricular beat)
+network - BP feedfwd-netw implementation using the graph model (not matrix model)
+
+TODO Required:
+1: demo4 - demo on a dataset similar with what we will going to test [DONE]
+
