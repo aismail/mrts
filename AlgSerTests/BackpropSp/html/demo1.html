@@ -1,0 +1,130 @@
+<!--
+Title:demo1.html
+
+Description:
+  demo1 for backprop1
+
+Development Environment:
+  Linux 2.2.12-20 (Red Hat 6.1)
+
+Legalise:  
+  Copyright (C) 2002 Digital Burro, INC.
+
+Author:
+  G.S. Cole (gsc\@acm.org)
+
+Maintenance History:
+  $Id: demo1.html,v 1.3 2002/02/03 23:58:11 gsc Exp $
+
+  $Log: demo1.html,v $
+  Revision 1.3  2002/02/03 23:58:11  gsc
+  Amplifying build instructions
+
+  Revision 1.2  2002/02/03 23:42:04  gsc
+  First Release
+
+  Revision 1.1  2002/02/03 22:37:01  gsc
+  Initial Check In
+-->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<HTML>
+<HEAD>
+<TITLE>Demonstration 1</TITLE>
+<LINK REL="STYLESHEET" HREF="../backprop1.css">
+<LINK REV="MADE" HREF="mailto:guycole@digiburo.com">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="KEYWORDS" CONTENT="neural network, java, backpropagation">
+<META NAME="DESCRIPTION" CONTENT="neural network demonstration">
+</HEAD>
+
+<BODY BGCOLOR=white>
+<H1><CENTER>Demonstration 1</CENTER></H1>
+<HR>
+
+This demonstration classifies points as above or below the line y = -5x+2.
+The network has 2 input nodes, 7 middle nodes, one output node.  Sources
+are found in com.digiburo.backprop1b.demo1
+
+<P>
+The input nodes contain the (X, Y) coordinates of the point.
+Note that inputs must be scaled in the range (0, 1) so the
+training set will only contain points in this range.
+
+<P>
+Output nodes return values in the range of (0, 1), so a positive 
+point will have a value near 1.0 and a negative point would be 
+near 0.0
+
+<P>
+To recreate the demo:
+
+<OL>
+<LI>Obtain backprop1b.jar (download or build).  
+    Update $CLASSPATH to include jar file.
+    Package name is com.digiburo.backprop1b.demo1 so ensure you type the
+    correct command (i.e. java com.digiburo.backprop1b.demo1.GenerateDatum
+    to generate datum).
+<LI>Run the GenerateDatum utility to generate a training set of 
+    250 random points along with the corrsponding output value.  
+    These random points are saved as a serialized PatternList 
+    in a file named 'demo1.trn'. Here is a graph containing a 
+    <A HREF="./demo1_train.png"> Sample Demo1 Training Set</A>
+<LI>The Trainer utility accepts the training file 'demo1.trn' and 
+    produces 'demo1.serial' after the network has been trained.  
+    'demo1.serial' contains a serialized Network class.
+    Note that training can take some time, and might not ever finish.
+    If training takes an excessive amount of time (say, overnight)
+    then I kill Trainer and restart.  
+
+<PRE>
+Trainer runtime produces output like this:
+14520000 success:247 needed:250 best run:247
+89 128 129 
+</PRE>
+
+    Read first line as: cumulative training cycle total, patterns trained, 
+    total patterns, most patterns successfully trained this report.
+    The second line contains the indices of untrained patterns.  
+    It is useful to know which patterns are inhibiting training, so the
+    the training set can be modified.
+
+    <P>
+    In this case, there have been 14520000 cycles through the training set.
+    Right now, 247 out of 250 patterns have been trained.  Best run this
+    cycle was 247 matched patterns.  Patterns 89, 128, 129 still fail
+    training.  (It will be typical to have a few problem patterns like this).
+
+<LI>The Tester utility generates points over the range of [0, 1] 
+    at increments of 0.1 and submits each point to the trained
+    Network for classification.  Here is a graph containing a 
+    <A HREF="./demo1_test.png"> Sample Demo1 Test Set</A>
+</OL>
+
+<P>
+As you can see from the graph
+<A HREF="./demo1_test.png"> Sample Demo1 Test Set</A>
+the network has imperfectly learned the line.  
+It's a good generalization, especially given that the training
+set was randomly generated.
+If you don't like the results, you could always generate another
+random training set and try again.  
+Another improvement might be to have more points along the line,
+especially at the endpoints.
+
+<HR>
+<PRE>$Id: demo1.html,v 1.3 2002/02/03 23:58:11 gsc Exp $</PRE>
+&#169 Copyright 2002 Digital Burro, INC, All Rights Reserved
+<ADDRESS>
+<A HREF="http://sites.google.com/site/guycole">Guy Cole</A>
+<A HREF="mailto:guycole@gmail.com">guycole@gmail.com</A>
+<A HREF="http://www.digiburo.com">Digital Burro, INC</A>
+</ADDRESS>
+</BODY>
+</HTML>
+<!--
+#;;; Local Variables: ***
+#;;; mode:html ***
+#;;; End: ***
+-->
