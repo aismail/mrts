@@ -9,10 +9,9 @@ import java.util.Map.Entry;
  * @author Cristi.Barca
  * 
  * Sensor Data class.
- * Describes the date inside the "package".
- * This class will be used for the serialization process.
- * The value of a column would be a serialized SensorData object.
- * 
+ * Describes the data inside the "package".
+ * Uses a HashMap to store key-value.
+ *  
  */
 public class SensorData {
 	// Private members	

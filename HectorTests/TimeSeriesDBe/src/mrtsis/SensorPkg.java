@@ -13,6 +13,7 @@ import mrtsdm.*;
  * 
  * Sensor Package class.
  * Describes the "package" structure received from sensors.
+ * A package from sensors contains the timestamp & data.
  * 
  */
 public class SensorPkg {

@@ -37,7 +37,7 @@ import mrtsis.*;
  * Cassandra Time Series Database class.
  * Establishes the connection with Cassandra cluster and 
  * implements query methods to use on time series database.
- * Dependencies: Hector API, Gson (Google JSon lib)
+ * Dependencies: Hector API
  * 
  */
 public class CassTSDB implements ICassTSDB {

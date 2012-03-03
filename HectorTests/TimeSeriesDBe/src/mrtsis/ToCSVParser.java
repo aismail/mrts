@@ -11,6 +11,7 @@ import java.io.IOException;
  * @author Cristi.Barca
  * To CSV format parser class.	
  * Parses a particular format-file (as you define it) into CSV format.
+ * 
  */
 public class ToCSVParser {
 	

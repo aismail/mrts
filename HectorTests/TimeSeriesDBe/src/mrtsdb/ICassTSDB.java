@@ -9,8 +9,7 @@ import mrtsdm.*;
 /**
  * @author Cristi.Barca
  * 
- * Cassandra Time Series Database interface.
- * 
+ * Cassandra Time Series Database interface. 
  * Interfaces a Time Series Database using SensorData class type.
  * 
  */

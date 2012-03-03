@@ -10,7 +10,8 @@ import au.com.bytecode.opencsv.CSVReader;
  * @author Cristi.Barca
  * 
  * Sensor Input Stream class. 
- * Gets data (actually) from a source file full with data sensors (time-series data).
+ * Gets data from a source file with time-series data.
+ * Dependencies: opencsv
  * 
  */
 public class SensorIS {
