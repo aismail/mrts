@@ -1,0 +1,128 @@
+<!--
+Title:backprop1.html
+
+Description:
+  backprop1 overview
+
+Development Environment:
+  Linux 2.2.12-20 (Red Hat 6.1)
+
+Legalise:  
+  Copyright (C) 2002 Digital Burro, INC.
+
+Author:
+  G.S. Cole (gsc\@acm.org)
+
+Maintenance History:
+  $Id: backprop1.html,v 1.2 2002/02/03 23:42:04 gsc Exp $
+
+  $Log: backprop1.html,v $
+  Revision 1.2  2002/02/03 23:42:04  gsc
+  First Release
+
+  Revision 1.1  2002/02/03 22:37:01  gsc
+  Initial Check In
+-->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<HTML>
+<HEAD>
+<TITLE>backprop1 - core package</TITLE>
+<LINK REL="STYLESHEET" HREF="../backprop1.css">
+<LINK REV="MADE" HREF="mailto:guycole@digiburo.com">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="KEYWORDS" CONTENT="neural network, java, backpropagation">
+<META NAME="DESCRIPTION" CONTENT="source code narrative">
+</HEAD>
+
+<BODY BGCOLOR=white>
+<H1><CENTER>backprop1 - core package</CENTER></H1>
+<HR>
+
+The core package is com.digiburo.backprop1 and here is a UML 
+<A HREF="./bp1_class.gif">class diagram</A>.  Many of my comments
+are tied to this diagram, so you might want to print it for reference.
+
+<P>
+A neural network consists of arcs and nodes and my design
+reflects this basic structure.
+
+<P>
+ArcNodeParent is shared by arcs and nodes.  It only contains a unique ID.
+Yes, I know about Object.hashCode().  I wanted small, sequential numbers
+to verify the connections during debugging and Object.hashCode() gives
+large numbers which are not (reliably) sequential.
+
+<P>
+Arcs connect Nodes.  In keeping w/the usual backpropagation design
+arcs contain weight terms which are applied to the connecting nodes.
+There is only one arc class.
+
+<P>
+Nodes are connected by arcs and contain error and value terms.  A node
+might have many inputs and many outputs.  In contrast to arcs, there
+are specific classes for Input, Output and Middle nodes.  AbstractNode
+is the base node class.
+
+<P>
+InputNode contains the input pattern (i.e. the pattern to be classified).
+Note that input values must be scaled in the range (0, 1).  At one time,
+I did explicitly test for valid ranges and throw exceptions at offenders.
+Currently, the test is commented out for speed.  You might
+consider restoring this test if your input set is not well behaved.
+
+<P>
+OutputNode contains the output pattern (i.e. results after running the
+network).  Outputs are also in the range (0, 1).  The transfer function
+is the usual 1/1+e^-arg.
+
+<P>
+MiddleNode contains the opaque inner layer.  The only difference between
+MiddleNode and OutputNode is a different computeError() method.
+
+<P>
+The Network class serializes the state of the arcs and nodes (memento pattern).
+This permits a trained class to be written as a file, and later
+restored.  If you are new to java, please read the java documentation 
+about serialized classes, especially regarding versions.  Some data
+sets take a long time to train and it would be annoying to orphan
+this work by a serialized object incompatability.  (There are ways
+to mitigate this, read the javadoc).
+
+<P>
+The BackProp object ties together Network (arcs/nodes) and adds the
+NN functionality (i.e. runNetwork() to classify a pattern and 
+trainNetwork() to train for a pattern).  BackProp is what your 
+application should start from.
+
+<P>
+Pattern/PatternList classes are how you specify an training pattern or
+a collection of training patterns.  You have a choice of overloaded
+methods in BackProp which allow you to load inputs/read results as
+an array of double or as a Pattern.  
+
+<P>
+Look over the demonstration programs for some implementation hints.  
+Each demonstration is implemented as a separate package.  Within
+the demo package will be a local class which extends from BackProp.
+This adds some local functionality.  There will also be utilities
+which generate test datum and perform training.  Finally there will
+be an application to exercise the trained network, so you can 
+verify the results.
+
+<HR>
+<PRE>$Id: backprop1.html,v 1.2 2002/02/03 23:42:04 gsc Exp $</PRE>
+&#169 Copyright 2002 Digital Burro, INC, All Rights Reserved
+<ADDRESS>
+<A HREF="http://www.digiburo.com/gsc/gsc.html">G.S. Cole</A>
+<A HREF="mailto:gsc@digiburo.com">gsc@digiburo.com</A>
+<A HREF="http://www.digiburo.com">Digital Burro, INC</A>
+</ADDRESS>
+</BODY>
+</HTML>
+<!--
+#;;; Local Variables: ***
+#;;; mode:html ***
+#;;; End: ***
+-->

@@ -1,0 +1,81 @@
+<!--
+Title:gsg.html
+Description:backprop1
+Legalise:Copyright (C) 2009 Digital Burro, INC.
+Author:G.S. Cole (gsc@digiburo.com)
+-->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<HTML>
+<HEAD>
+<TITLE>Backpropagation Neural Network in Java</TITLE>
+<LINK REL="STYLESHEET" HREF="backprop1.css">
+<LINK REV="MADE" HREF="mailto:guycole@gmail.com">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="KEYWORDS" CONTENT="neural network, java, backpropagation, machine learning">
+<META NAME="DESCRIPTION" CONTENT="index">
+</HEAD>
+
+<BODY BGCOLOR=white>
+<H1><CENTER>Getting Started w/BackProp1</CENTER></H1>
+<HR>
+
+Hello and thanks for reviewing <a href="http://sourceforge.net/projects/backprop1">backprop1</a>.
+
+<p>
+"backprop1" provides support for a simple three layer backpropagation neural network implemented in Java. 
+
+<p>
+Please note there are two versions of backprop1.  The older version resides
+in CVS and builds to "backprop1" - and a newer version is within SVN and
+builds "backprop1b".  The two versions are nearly identical, but I hope 
+you will adopt the SVN version ("backprop1b").
+
+<p>
+If you are an eclipse user, you can pull the sources into a workspace by
+using SVN.
+
+<p>
+Otherwise, it might be easier to download "backprop1b_src.jar" which will
+contain everything you need.  There will be a ant build.xml inside the jar 
+to help you build the application.
+
+<p>
+The backprop1 distribution comes with backpropagation network code and 
+three demo applications, a point classifier (demo1), a XOR example (demo2) 
+and a digit recognition application (demo3).  Each demo application has a
+dedicated help page in the html directory.
+
+<p>
+To get started, edit "build.properties" to reflect the path to backprop1b.
+Type "ant compile" - and you should be done.  ("ant javadoc" is optional
+but a good idea).
+
+<p>
+It is necessary to train a network before using a demo.  It isn't difficult
+and I have provided applications to perform training for you.  See the 
+JavaDoc.
+
+<p>
+Everybody likes "demo3" the first time because it has a GUI. 
+
+<p>
+"backprop1" is free for your use. There is no cost, no warranty, no support,
+nothing but good wishes and java sources. If you do something really neat 
+please send an <A HREF="mailto:guycole@gmail.com">email</A> about your 
+success. Good luck with your project. 
+
+<HR>
+<ADDRESS>
+<A HREF="http://sites.google.com/site/guycole">Guy Cole</A>
+<A HREF="mailto:guycole@gmail.com">guycole@gmail.com</A>
+<A HREF="http://www.digiburo.com">Digital Burro, INC</A>
+</ADDRESS>
+</BODY>
+</HTML>
+<!--
+#;;; Local Variables: ***
+#;;; mode:html ***
+#;;; End: ***
+-->
