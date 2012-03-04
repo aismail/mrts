@@ -3,6 +3,6 @@
 Algorithms Serial Tests (Java projects)
 
 1. BackpropSp: a simple implementation of ANN Backpropagation algorithm + few demos
-2. EncogTest: ======= [not yet _began_]
+2. EncogTest: testing ANN algorithms' time performance (some demos included)
 
 

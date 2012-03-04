@@ -1,0 +1,11 @@
+
+Using ENCOG to run some tests on different ANN algorithms
+
+Packages:
+- Demo1: testing Backpropagation algorithms' time performance on ECG dataset
+	(the same dataset used in Demo4 from BackpropSp)
+	link: http://biomed.uninet.edu/2010/n3/ayub.html
+		- Simple backpropagation (from 5min to 15m training, 
+		depends on the precision we set)
+		- Resilient backpropagation (less than 5min)
+		- LMA (..doesn't work :-/)
