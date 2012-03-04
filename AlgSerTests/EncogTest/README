@@ -8,4 +8,5 @@ Packages:
 		- Simple backpropagation (from 5min to 15m training, 
 		depends on the precision we set)
 		- Resilient backpropagation (less than 5min)
-		- LMA (..doesn't work :-/)
+		- LMA (..doesn't work, it freezes)
+
