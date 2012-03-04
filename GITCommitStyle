@@ -12,8 +12,8 @@ HectorTests.MrtsDataModel: Added the SensorData class which will be serialized a
 HectorTests: Setted MrtsDataModel project folder: adding README file
 HadoopTests: Added the folder for java-hadoop test & examples projects
 SerialTests: Added the folder for serial time-series alg. test
-SerialTests.ANLBackP: Added the folder for ANL Back Propagation test project+ README file
-SerialTests.ANLBackP: Updated BackPMain.java with __whatever__ :D
+SerialTests.ANNBackP: Added the folder for ANN Back Propagation test project+ README file
+SerialTests.ANNBackP: Updated BackPMain.java with __whatever__ :D
 
 [No context - if refers to the head of the _branch_] 
 
