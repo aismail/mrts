@@ -8,7 +8,7 @@ import network.PatternList;
 
 
 /**
- * Train the demo1 backpropagation network.
+ * Train the demo4 backpropagation network.
  *
  * @author G.S. Cole (gsc@digiburo.com)
  * @version $Id: Trainer.java,v 1.5 2002/02/02 20:53:53 gsc Exp $

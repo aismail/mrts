@@ -11,6 +11,7 @@ import java.util.List;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
+import network.Pattern;
 import network.PatternList;
 
 
@@ -45,41 +46,54 @@ import network.PatternList;
  */
 
 public class GenerateDatum {
+	// Ideal values for each type of heart beat
     public static final double NBEAT = 0.9999999999;
     public static final double VBEAT = 0.0000000001;
 
     private static final int MAX_INPUT = 650000;
     private static final int MAX_NBEATS = 1286; // Number of N beats for training
     private static final int MAX_VBEATS = 792; // Number of V beats for training
+    
     private static final String DEFAULT_ANN = "ann.stream.csv";
     private static final String DEFAULT_SENS = "sensor.stream.csv";
-   
+    
     private static final int INPUTN = 301; // Number of samples from input
     private static final int INPUT_STEP = 150; // Step left&right among R peak
     private static final int OUTPUTN = 1; // Number of output values
+    
+    private static final String DEFAULT_TRAIN = "train.stream.csv";
+    // Serialized training file (with PatternList object) 
+    // - for internal use
     private static final String TRAIN_FILENAME = "demo4.trn"; 
-        
+    
     private static final String DEFAULT_TEST = "test.stream.csv";
     private static final int NTEST = 250;
     private static final int VTEST = 200;
     
     private PatternList pl = new PatternList();
-    private String sourceSens = null, sourceAnn = null, destTest = null;
+    
+    private String sourceSens = null, sourceAnn = null, 
+    	destTest = null, destTrain = null;
     private CSVReader reader;
     private CSVWriter writer;
+    
     private double[] ecgData = new double[MAX_INPUT];
     private List<Integer> ecgAnnN = new ArrayList<Integer>();
     private List<Integer> ecgAnnV = new ArrayList<Integer>();
+    
     private double norm;
     
     public GenerateDatum() {
-    	this(DEFAULT_SENS, DEFAULT_ANN, DEFAULT_TEST);
+    	this(DEFAULT_SENS, DEFAULT_ANN, 
+    			DEFAULT_TEST, DEFAULT_TRAIN);
     }
     
-    public GenerateDatum(String source1, String source2, String dest1) {	
+    public GenerateDatum(String source1, String source2, 
+    		String dest1, String dest2) {	
     	sourceSens = source1;
     	sourceAnn = source2;
     	destTest = dest1;
+    	destTrain = dest2;
     }
     
     public void readAnnSet() {
@@ -190,6 +204,23 @@ public class GenerateDatum {
     	System.out.println("PatternList:" + pl.size());
     	
     	pl.writer(new File(TRAIN_FILENAME));
+    	
+    	// Generating the learning data - csv file format
+    	writer = new CSVWriter(new FileWriter(destTrain));
+    	
+    	for (i = 0; i < pl.size(); i++) {
+    		String[] line = new String[INPUTN + OUTPUTN];
+    		Pattern p = pl.get(i);
+    		
+    		for (ii = 0; ii < INPUTN; ii++) {
+    			line[ii] = Double.toString(p.getInput()[ii]);
+    		}
+    		line[INPUTN] = Double.toString(p.getOutput()[0]);
+    		
+    		writer.writeNext(line);
+    	}
+    	
+    	writer.close();
     }
     
     public void createTestSet() {
