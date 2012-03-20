@@ -1,7 +1,9 @@
 
+BackpropSp - backpropagation simple
+
 Implementing ANN Backpropagation algorithm
 
-# Author: G.S. Cole (gsc@digiburo.com)
+# Original Author: G.S. Cole (gsc@digiburo.com)
 
 JavaDoc: http://backprop1.sourceforge.net/doc/javadoc/com/digiburo/backprop1/package-summary.html
 SourcesAvailableAt: http://sourceforge.net/projects/backprop1
