@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -51,31 +52,16 @@ public class GenerateDatum {
     public static final double VBEAT = 0.0000000001;
 
     private static final int MAX_INPUT = 650000;
-    private static final int MAX_NBEATS = 1286; // Number of N beats for training
-    private static final int MAX_VBEATS = 792; // Number of V beats for training
-    
-    private static final String DEFAULT_ANN = "ann.stream.csv";
-    private static final String DEFAULT_SENS = "sensor.stream.csv";
     
     private static final int INPUTN = 301; // Number of samples from input
     private static final int INPUT_STEP = 150; // Step left&right among R peak
-    private static final int OUTPUTN = 1; // Number of output values
+    private static final int OUTPUTN = 2; // Number of output values
+      
+    private PatternList pl;
     
-    private static final String DEFAULT_TRAIN = "train.stream.csv";
-    // Serialized training file (with PatternList object) 
-    // - for internal use
-    private static final String TRAIN_FILENAME = "demo4.trn"; 
-    
-    private static final String DEFAULT_TEST = "test.stream.csv";
-    private static final int NTEST = 250;
-    private static final int VTEST = 200;
-    
-    private PatternList pl = new PatternList();
-    
-    private String sourceSens = null, sourceAnn = null, 
-    	destTest = null, destTrain = null;
     private CSVReader reader;
     private CSVWriter writer;
+    private CSVWriter rwriter;
     
     private double[] ecgData = new double[MAX_INPUT];
     private List<Integer> ecgAnnN = new ArrayList<Integer>();
@@ -84,25 +70,24 @@ public class GenerateDatum {
     private double norm;
     
     public GenerateDatum() {
-    	this(DEFAULT_SENS, DEFAULT_ANN, 
-    			DEFAULT_TEST, DEFAULT_TRAIN);
+    	
     }
-    
-    public GenerateDatum(String source1, String source2, 
-    		String dest1, String dest2) {	
-    	sourceSens = source1;
-    	sourceAnn = source2;
-    	destTest = dest1;
-    	destTrain = dest2;
-    }
-    
-    public void readAnnSet() {
+        
+    public void readAnnSet(String sourceAnn) {
     	String[] values;
+    
+    	ecgAnnN.clear();
+    	ecgAnnV.clear();
     	
     	try {
 			reader = new CSVReader(new FileReader(sourceAnn));
 			
+			reader.readNext();
+			
 			while ( (values = reader.readNext()) != null) {
+				if (values.length < 4) {
+					continue;
+				}
 				if (values[3].compareTo("N") == 0) {
 					ecgAnnN.add(Integer.parseInt(values[2]));
 				}
@@ -125,13 +110,16 @@ public class GenerateDatum {
 
     }
     
-    public void readDataSet() {
+    public void readDataSet(String sourceSens) {
     	String[] values;
     	int cont = 0;
     	double max = 0;
     	
     	try {
 			reader = new CSVReader(new FileReader(sourceSens));
+			
+			reader.readNext();
+			reader.readNext();
 			
 			while ( (values = reader.readNext()) != null) {
 				ecgData[cont] = Double.parseDouble(values[1]);
@@ -156,17 +144,24 @@ public class GenerateDatum {
     /**
      * Generate pattern list 
      */
-    public void createTrainingSet() throws Exception {
+    public void createTrainingSet(String destTrain, String trnSer) throws Exception {
     	int i, ii, cc;
-    	    	
-		for (i = 0; i < MAX_NBEATS; i++) {
+    	 
+    	pl = new PatternList();
+    	
+		for (i = 0; i < ecgAnnN.size() / 2; i++) {
 			Integer sample = ecgAnnN.get(i);    		
     		int samplev = sample.intValue();
+    		
+    		if (samplev - INPUT_STEP <= 0 || samplev + INPUT_STEP >= MAX_INPUT) {
+    			continue;
+    		}
     		
     		double[] input = new double[INPUTN];
     		
     		System.out.println("NRpeak:" + ecgData[samplev - 1] + 
     				" normalized:" + (ecgData[samplev - 1] + norm) / (2 * norm));
+    		
     		
     		for (cc = 0, ii = samplev - INPUT_STEP - 1; ii < samplev + INPUT_STEP; cc++, ii++) {
     			input[cc] = (ecgData[ii] + norm) / (2 * norm);
@@ -176,13 +171,18 @@ public class GenerateDatum {
     		
     		double[] output = new double[OUTPUTN];
     		output[0] = NBEAT;
+    		output[1] = VBEAT;
 
     		pl.add(input, output);
     	}
     	
-    	for (i = 0; i < MAX_VBEATS; i++) {
+    	for (i = 0; i < ecgAnnV.size() / 2; i++) {
     		Integer sample = ecgAnnV.get(i);
     		int samplev = sample.intValue();
+    		
+    		if (samplev - INPUT_STEP <= 0 || samplev + INPUT_STEP >= MAX_INPUT) {
+    			continue;
+    		}
     		
     		double[] input = new double[INPUTN];
     		
@@ -197,16 +197,21 @@ public class GenerateDatum {
     		
     		double[] output = new double[OUTPUTN];
     		output[0] = VBEAT;
-
+    		output[1] = NBEAT;
+    		       
     		pl.add(input, output);
     	}
     	
     	System.out.println("PatternList:" + pl.size());
     	
-    	pl.writer(new File(TRAIN_FILENAME));
+    	pl.writer(new File(trnSer));
     	
     	// Generating the learning data - csv file format
     	writer = new CSVWriter(new FileWriter(destTrain));
+    	
+    	String[] fline = new String[1];
+    	fline[0] = "" + pl.size();
+    	writer.writeNext(fline);
     	
     	for (i = 0; i < pl.size(); i++) {
     		String[] line = new String[INPUTN + OUTPUTN];
@@ -216,6 +221,7 @@ public class GenerateDatum {
     			line[ii] = Double.toString(p.getInput()[ii]);
     		}
     		line[INPUTN] = Double.toString(p.getOutput()[0]);
+    		line[INPUTN + 1] = Double.toString(p.getOutput()[1]);
     		
     		writer.writeNext(line);
     	}
@@ -223,41 +229,88 @@ public class GenerateDatum {
     	writer.close();
     }
     
-    public void createTestSet() {
-    	int i, cc, ii;
+    public void createTestSet(String destTest, String randTest) {
+    	int i, cc, ii, totN, totV;
+    	Random rand = new Random();
     	
     	try {
 			writer = new CSVWriter(new FileWriter(destTest));
+			rwriter = new CSVWriter(new FileWriter(randTest));
 			
-			for (i = MAX_NBEATS; i < MAX_NBEATS + NTEST; i++) {
+			String[] fline = new String[2];
+	    	totN = (ecgAnnN.size() - ecgAnnN.size() / 2);
+	    	totV = (ecgAnnV.size() - ecgAnnV.size() / 2);
+	    	
+	    	if (ecgAnnN.size() > 0 && ecgAnnN.get(ecgAnnN.size() - 1).intValue() 
+	    			+ INPUT_STEP >= MAX_INPUT) {
+	    		totN--;
+	    	}
+	    	
+	    	if (ecgAnnV.size() > 0 && ecgAnnV.get(ecgAnnV.size() - 1).intValue() 
+	    			+ INPUT_STEP >= MAX_INPUT) {
+	    		totV--;
+	    	}
+	    	
+	    	fline[0] = "" + totN;
+	    	fline[1] = "" + totV;
+	    	
+	    	writer.writeNext(fline);
+	    	rwriter.writeNext(fline);
+			
+			for (i = ecgAnnN.size() / 2; i < ecgAnnN.size(); i++) {
 	    		Integer sample = ecgAnnN.get(i);
 	    		int samplev = sample.intValue();
-	    		String[] line = new String[1];
+	    	
+	    		if (samplev - INPUT_STEP <= 0 || samplev + INPUT_STEP >= MAX_INPUT) {
+	    			continue;
+	    		}
+	    		
+	    		String[] line = new String[INPUTN],
+	    				 rline = new String[INPUTN];
 	    		   		
 	    		System.out.println("TEST:NRpeak:" + ecgData[samplev - 1] + 
 	    				" normalized:" + (ecgData[samplev - 1] + norm) / (2 * norm));
 	    		
 	    		for (cc = 0, ii = samplev - INPUT_STEP - 1; ii < samplev + INPUT_STEP; cc++, ii++) {
-	    			line[0] = Double.toString((ecgData[ii] + norm) / (2 * norm));
-	    			writer.writeNext(line);
+	    			line[cc] = Double.toString((ecgData[ii] + norm) / (2 * norm));
+	    			//rline[cc] = Double.toString(rand.nextDouble());
+	    			rline[cc] = Double.toString((ecgData[ii] + norm) / (2 * norm) 
+	    					+ (rand.nextFloat() / 10)
+	    					- (rand.nextFloat() / 10));
 	    		}  		
+	    		
+	    		writer.writeNext(line);
+	    		rwriter.writeNext(rline);
 	      	}
 			
-			for (i = MAX_VBEATS; i < MAX_VBEATS + VTEST; i++) {
+			for (i = ecgAnnV.size() / 2; i < ecgAnnV.size(); i++) {
 	    		Integer sample = ecgAnnV.get(i);
 	    		int samplev = sample.intValue();
-	    		String[] line = new String[1];
+	    		
+	    		if (samplev - INPUT_STEP <= 0 || samplev + INPUT_STEP >= MAX_INPUT) {
+	    			continue;
+	    		}
+	    		
+	    		String[] line = new String[INPUTN],
+						 rline = new String[INPUTN];
 	    		   		
 	    		System.out.println("TEST:VRpeak:" + ecgData[samplev - 1] + 
 	    				" normalized:" + (ecgData[samplev - 1] + norm) / (2 * norm));
 	    		
 	    		for (cc = 0, ii = samplev - INPUT_STEP - 1; ii < samplev + INPUT_STEP; cc++, ii++) {
-	    			line[0] = Double.toString((ecgData[ii] + norm) / (2 * norm));
-	    			writer.writeNext(line);
+	    			line[cc] = Double.toString((ecgData[ii] + norm) / (2 * norm));
+	    			//rline[cc] = Double.toString(rand.nextDouble());
+	    			rline[cc] = Double.toString((ecgData[ii] + norm) / (2 * norm) 
+	    					+ (rand.nextFloat() / 10)
+	    					- (rand.nextFloat() / 10));
 	    		}  		
+	    		
+	    		writer.writeNext(line);
+	    		rwriter.writeNext(rline);
 	      	}
 			
 			writer.close();
+			rwriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -268,12 +321,34 @@ public class GenerateDatum {
      * Driver
      */
     public static void main(String args[]) throws Exception {
+    	String annSet = null, dataSet = null, trnSet = null, 
+    			testSet = null, trnSer = null, randSet = null;
+    	int i;
+    	
     	System.out.println("begin");
     	GenerateDatum gd = new GenerateDatum();
-    	gd.readAnnSet();
-    	gd.readDataSet();
-    	gd.createTrainingSet();
-    	gd.createTestSet();
+    	
+    	for (i = 100; i < 235; i++) { 
+    		annSet = "./dataset/" + "ann_" + i + ".csv";
+    		dataSet = "./dataset/" + "samples_" + i + ".csv";
+    		trnSet = "./train&test/" + "train_" + i + ".csv";
+    		testSet = "./train&test/" + "test_" + i + ".csv";
+    		trnSer = "./train_serialized/" + i + ".trn";
+    		//randSet = "./rand_test/" + "rtest_" + i + ".csv";
+    		randSet = "./noisy_test/" + "ntest_" + i + ".csv";
+    		
+    		File file = new File(annSet);
+    		
+    		if (!file.exists()) {
+    			continue;
+    		}
+    		
+    		gd.readAnnSet(annSet);
+    		gd.readDataSet(dataSet);
+    		//gd.createTrainingSet(trnSet, trnSer);
+    		gd.createTestSet(testSet, randSet);
+    	}
+    	
     	System.out.println("end");
     }
 }

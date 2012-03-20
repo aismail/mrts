@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 
 import java.io.FileWriter;
 import java.io.BufferedWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -41,17 +43,14 @@ nn *   Copyright (C) 2002 Digital Burro, INC.
  */
 
 public class Tester {
-    private static final String FILENAME = "beats.txt";
-    private static final String NETWORK_FILENAME = "demo4.serial";
+    private static final String FILENAME = "results_208.txt";
+    private static final String NETWORK_FILENAME = "208.serial";
     private static final int INPUTN = 301;
-    private static final int NTEST = 250;
-    private static final int VTEST = 200;
-    private static final int MAX_TESTS = INPUTN * (NTEST + VTEST);
-    private static final String DEFAULT_TEST = "test.stream.csv";
+    private static final String DEFAULT_TEST = "./train&test/test_208.csv";
 
     private BpDemo4 bp;
     private CSVReader reader;
-    private double[] ecgData = new double[MAX_TESTS];
+    private List<Double> ecgData = new ArrayList<Double>();
 
     /**
      * Create network
@@ -63,17 +62,22 @@ public class Tester {
     
     public void readTests(String testfile) {
     	String[] values;
-    	int cont = 0;
+    	int i;
     	
     	try {
 			reader = new CSVReader(new FileReader(testfile));
 			
+			values = reader.readNext();
+			System.out.println(testfile + " N: " + values[0] + " V: " + values[1]);
+			
 			// reading normalized data tests
 			while ((values = reader.readNext()) != null) {
-				ecgData[cont++] = Double.parseDouble(values[0]);
+				for (i = 0; i < INPUTN; i++) {
+					ecgData.add(Double.parseDouble(values[i]));
+				}
 			}
 			
-			System.out.println("TotalData:" + ecgData.length);
+			System.out.println("TotalData:" + ecgData.size());
 			
 			reader.close();
 		} catch (FileNotFoundException e) {
@@ -92,14 +96,13 @@ public class Tester {
 		int ii, jj;
 		
 		// write answers
-
 		BufferedWriter bw = new BufferedWriter(new FileWriter(FILENAME));
 
-		for (ii = 0; ii < ecgData.length; ii += INPUTN) {
+		for (ii = 0; ii < ecgData.size(); ii += INPUTN) {
 			double[] input = new double[INPUTN];
 						
 			for (jj = ii; jj < ii + INPUTN; jj++) {
-				input[jj - ii] = ecgData[jj];
+				input[jj - ii] = ecgData.get(jj);
 			}
 			
 			writeData(bw, bp.classifier(input));

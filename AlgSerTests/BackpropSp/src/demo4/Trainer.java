@@ -41,8 +41,8 @@ import network.PatternList;
  */
 
 public class Trainer {
-    private static final String TRAIN_FILENAME = "demo4.trn";
-    private static final String NETWORK_FILENAME = "demo4.serial";
+    private static final String TRAIN_FILENAME = "./train_serialized/208.trn";
+    private static final String NETWORK_FILENAME = "208.serial";
 
     private BpDemo4 bp;
     private PatternList pl;
@@ -51,7 +51,7 @@ public class Trainer {
      * Create network
      */
     public Trainer() {
-    	bp = new BpDemo4(301, 10, 1, 0.25, 0.9);
+    	bp = new BpDemo4(301, 10, 2, 0.25, 0.9);
     }
 
     /**
@@ -68,7 +68,7 @@ public class Trainer {
 	 * Train the network on these patterns
 	 */
 	public void performTraining() {	
-		bp.trainNetwork(pl, (int)(pl.size() - 0.01 * pl.size()), -1, 0.0001, true);
+		bp.trainNetwork(pl, (int)(pl.size() - 0.01 * pl.size()), -1, 0.01, true);
 	}
 
     /**
