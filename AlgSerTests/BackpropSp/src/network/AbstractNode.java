@@ -32,6 +32,24 @@ public abstract class AbstractNode extends AbstractArcNode {
     }
     
     /**
+     * Return node backprop error term
+     * 
+     * @param node backprop error term
+     */
+    public double getBpError() {
+    	return(bpError);
+    }
+    
+    /**
+     * Define node backprop error term
+     * 
+     * @param arg new backprop error term
+     */
+    public void setBpError(double arg) {
+    	bpError = arg;
+    }
+    
+    /**
      * Return node value
      * 
      * @return node value
@@ -98,6 +116,11 @@ public abstract class AbstractNode extends AbstractArcNode {
      * Error for this node
      */
     double error;
+    
+    /**
+     * Backprop error for this node
+     */
+    double bpError;
     
     /**
      * Value for this node

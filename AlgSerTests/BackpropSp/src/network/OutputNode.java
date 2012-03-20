@@ -29,7 +29,7 @@ public class OutputNode extends AbstractNode {
      * @return learning rate
      */
     public double getLearningRate() {
-    	return(learning_rate);
+    	return (learning_rate);
     }
     
     /**
@@ -38,7 +38,7 @@ public class OutputNode extends AbstractNode {
      * @return momentum term
      */
     public double getMomentum() {
-    	return(momentum);
+    	return (momentum);
     }
 
 	/**
@@ -61,11 +61,12 @@ public class OutputNode extends AbstractNode {
 	 */
 	public void trainNode() {
 		error = computeError();
+		bpError = computeBpError();
 
 		Iterator<Arc> ii = input_arcs.iterator();
 		while (ii.hasNext()) {
 			Arc arc = ii.next();
-			double delta = learning_rate * error * arc.getInputValue();
+			double delta = learning_rate * bpError * arc.getInputValue();
 			arc.updateWeight(delta);
 		}
 	}
@@ -76,16 +77,26 @@ public class OutputNode extends AbstractNode {
      * @return sigmoid transfer value, result 0.0 < value < 1.0
      */
     private double sigmoidTransfer(double value) {
-    	return(1.0 / (1.0 + Math.exp(-value)));
+    	return (1.0 / (1.0 + Math.exp(-value)));
     }
     
     /**
-     * Compute output node error using the derivative of the sigmoid transfer function.
+     * Compute output node error
      * 
      * @return output node error
      */
     private double computeError() {
-    	return(value * (1.0 - value) * (error - value));
+    	return (error - value);
+    }
+    
+    /**
+     * Compute output node backprop error using the derivative of 
+     * the sigmoid transfer function.
+     * 
+     * @return output node backrop error
+     */
+    private double computeBpError() {
+    	return (value * (1.0 - value) * error);
     }
     
     /**
@@ -94,7 +105,7 @@ public class OutputNode extends AbstractNode {
      * @return description of object
      */
     public String toString() {
-    	return(toString("OutputNode:"));
+    	return (toString("OutputNode:"));
     }
     
     /**

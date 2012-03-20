@@ -27,7 +27,7 @@ public class MiddleNode extends OutputNode {
 	 * 
 	 * @return node error
 	 */
-	private double computeError() {
+	private double computeBpError() {
 		double total = 0.0;
 
 		Iterator<Arc> ii = output_arcs.iterator();
@@ -45,12 +45,12 @@ public class MiddleNode extends OutputNode {
 	 * Update input weights based on error (delta rule)
 	 */
 	public void trainNode() {
-		error = computeError();
+		bpError = computeBpError();
 
 		Iterator<Arc> ii = input_arcs.iterator();
 		while (ii.hasNext()) {
 			Arc arc = ii.next();
-			double delta = learning_rate * error * arc.getInputValue();
+			double delta = learning_rate * bpError * arc.getInputValue();
 			arc.updateWeight(delta);
 		}
 	}
@@ -61,7 +61,7 @@ public class MiddleNode extends OutputNode {
      * @return description of object
      */
     public String toString() {
-    	return(toString("MiddleNode:"));
+    	return (toString("MiddleNode:"));
     }
     
     /**

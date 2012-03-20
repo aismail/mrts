@@ -62,7 +62,7 @@ public class NetWork implements Serializable {
      * @return input nodes
      */
     public InputNode[] getInputNodes() {
-    	return(_inputz);
+    	return (_inputz);
     }
     
     /**
@@ -70,7 +70,7 @@ public class NetWork implements Serializable {
      * @return middle nodes
      */
     public MiddleNode[] getMiddleNodes() {
-    	return(_middlez);
+    	return (_middlez);
     }
     
     /**
@@ -78,7 +78,7 @@ public class NetWork implements Serializable {
      * @return output nodes
      */
     public OutputNode[] getOutputNodes() {
-    	return(_outputz);
+    	return (_outputz);
     }
     
     /**
@@ -86,9 +86,24 @@ public class NetWork implements Serializable {
      * @return arcs
      */
     public Arc[] getArcs() {
-    	return(_arcz);
+    	return (_arcz);
     }
     
+    /**
+     * Set the quadratic error
+     */
+    public void resetQError() {
+    	qerror = 0.0; 
+    }
+    
+    /**
+     * Retrieve the quadratic error
+     * @return quadratic error (double value)
+     */
+    public double getQError() {
+    	return 0.5 * qerror;
+    }
+        
     /**
      * Run network to classify pattern.
      * 
@@ -113,7 +128,7 @@ public class NetWork implements Serializable {
     		result[ii] = _outputz[ii].getValue();
     	}
 	
-    	return(result);
+    	return (result);
     }
     
     /**
@@ -128,6 +143,7 @@ public class NetWork implements Serializable {
 	
     	for (int ii = _outputz.length-1; ii >= 0; ii--) {
     		_outputz[ii].trainNode();
+    		qerror += Math.pow(_outputz[ii].getError(), 2);
     	}
 	
     	for (int ii = _middlez.length-1; ii >= 0; ii--) {
@@ -139,8 +155,13 @@ public class NetWork implements Serializable {
     		result[ii] = _outputz[ii].getValue();
     	}
 	
-    	return(result);
+    	return (result);
     }
+    
+    /**
+     * Quadratic error of the network
+     */
+    private double qerror = 0;
     
     /**
      * Arcs connect nodes

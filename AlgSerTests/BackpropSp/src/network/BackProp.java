@@ -76,19 +76,29 @@ public class BackProp {
     	int success;
     	int max_success = 0;
     	
-    	boolean while_flag;
+    	long tot_train = 0, tot_run = 0;
+    	long train_start, train_end,
+    		run_start, run_end;
 	
     	do {
     		success = 0;
+    		_net_work.resetQError();
 	    
     		for (int ii = 0; ii < limit; ii++) {
     			Pattern pattern = patternz.get(ii);
-		
+	
+    			run_start = System.currentTimeMillis();
     			_net_work.runNetWork(pattern.getInput());
-		
+    			run_end = System.currentTimeMillis();
+    			
+    			tot_run += (run_end - run_start);
+	
+    			train_start = System.currentTimeMillis();
     			double[] raw_results = _net_work.trainNetWork(pattern.getOutput());
-		
-    			//double[] truth = pattern.getOutput();
+    			train_end = System.currentTimeMillis();
+    			
+    			tot_train += (train_end - train_start);
+    				
     			int[] truth = Mathz.thresholdArray(threshold, pattern.getOutput());
     			int[] results = Mathz.thresholdArray(threshold, raw_results);
 		
@@ -111,32 +121,28 @@ public class BackProp {
 	    
     		if ((++counter % 10000) == 0) {		
     			if (verbose) {
+    				System.out.println("Fwd time: " + tot_run);
+    				System.out.println("Bwd time: " + tot_train);
+    				System.out.println("Netw error: " + _net_work.getQError());
     				System.out.println(counter + " success:" + success + " needed:" + max_match + " best run:" + max_success);
     			}
     		}
-	    
-    		if (success < limit) {
-    			while_flag = true;
-    		} else {
-    			while_flag = false;
-    		}
-	    
-    		if (max_cycles > -1) {
-    			if (counter >= max_cycles) {
-    				while_flag = false;
+    		
+    		if (max_cycles != -1) {
+    			if (counter > max_cycles) {
+    				break;
     			}
     		}
-	    
-    		if (success >= max_match) {
-    			while_flag = false;
-    		}
-    	} while(while_flag);
+    	} while(_net_work.getQError() > 0.01);
     	
     	if (verbose) {
+    		System.out.println("Fwd time: " + tot_run);
+			System.out.println("Bwd time: " + tot_train);
+    		System.out.println("Netw error: " + _net_work.getQError());
     		System.out.println("Training complete in " + counter + " cycles");
     	}
     	
-    	return(success);
+    	return (success);
     }
     
     /**

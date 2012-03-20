@@ -44,11 +44,11 @@ public class Arc extends AbstractArcNode {
     }
     
     /**
-     * Return the product of a output node error and arc weight
-     * @return the product of a output node error and arc weight
+     * Return the product of a output node backprop error and arc weight
+     * @return the product of a output node backprop error and arc weight
      */
     public double getWeightedOutputError() {
-        return(_out.getError() * _weight);
+        return(_out.getBpError() * _weight);
     }
     
     /**
