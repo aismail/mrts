@@ -1,5 +1,5 @@
 
-BackpropSp - backpropagation simple
+BackpropSp - backpropagation simple [3 layers]
 
 Implementing ANN Backpropagation algorithm
 
@@ -34,17 +34,6 @@ demo2 - XOR problem
 demo3 - character recognition
 demo4 - ECG anomalies detection (Arrythmia detection)
 	- following the article from http://biomed.uninet.edu/2010/n3/ayub.html
-		- ECG dataset: sensor.stream.csv
-		- ECG annotations set: ann.stream.csv
-		- ECG test set: test.stream.csv
-		- 3 trained BP feedfwd-networks: 
-			demo4_1.serial (4min), 
-			demo4_2.serial (1h15min),
-			demo4_3.serial (2h19min),
-			=> ~1h30m 
-		- tests results -> in beats.txt (1 for Normal beat, -1 for Ventricular beat)
 network - BP feedfwd-netw implementation using the graph model (not matrix model)
 
-TODO Required:
-1: demo4 - demo on a dataset similar with what we will going to test [DONE]
 
