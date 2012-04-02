@@ -2,7 +2,9 @@
 
 Algorithms Serial Tests (Java projects)
 
-1. BackpropSp: a simple implementation of ANN Backpropagation algorithm + few demos
+1. BackpropSp: ANN Backpropagation algorithm (3 layers, online mode) + few demos
 2. EncogTest: testing ANN algorithms' time performance (some demos included)
+3. Backprop: ANN Backpropagation algorithm (multiple layers, online or batch mode) + few demos
+4. Rprop: ANN Resilient backpropagation (multiple layers, batch mode) + few demos
 
 
