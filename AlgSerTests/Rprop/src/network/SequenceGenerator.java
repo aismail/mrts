@@ -13,7 +13,7 @@ package network;
 public class SequenceGenerator {
 
     /**
-     * Each arc/node has a unique identifer. 
+     * Each arc/node has a unique identifier. 
      * This was to help w/development, but it doesn't hurt to retain.
      * @return unique identifier
      */

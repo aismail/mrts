@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 
 import network.Network;
+import network.NetworkStruct;
 import network.PatternList;
 
 
@@ -20,18 +21,18 @@ public class Trainer {
 
     private BpDemo4 bp;
     private PatternList pl;
-    
+    private NetworkStruct net_struct;
     
     /**
      * Create network
      */
     public Trainer() {
-    	Network network = new Network();
-    	network.setInputLayer(301);
-    	network.addMiddleLayer(100);
-    	network.setOutputLayer(2);
-    	network.finalizeStructure();
+    	net_struct = new NetworkStruct(0.1);
+    	net_struct.setInputPop(301);
+    	net_struct.addMiddlePop(100);
+    	net_struct.setOutputPop(2);
     	
+    	Network network = new Network(net_struct);
     	bp = new BpDemo4(network);
     }
 
@@ -49,7 +50,7 @@ public class Trainer {
 	 * Train the network on these patterns
 	 */
 	public void performTraining() {	
-		bp.trainNetwork(pl, 0.1, -1, 0.1, true);
+		bp.trainNetwork(pl, net_struct.getError(), net_struct.getMaxEpochs(), 0.1, true);
 	}
 
     /**

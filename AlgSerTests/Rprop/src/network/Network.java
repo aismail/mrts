@@ -30,11 +30,25 @@ public class Network implements Serializable {
 	public Network(double learning_rate, double momentum) {
 		// Useful for Backpropagation
 		// Rprop doesn't use learning rate and momentum
-		this.learning_rate = learning_rate;
-		this.momentum = momentum;
+		_learning_rate = learning_rate;
+		_momentum = momentum;
 		
-		_middleLayers = new ArrayList<MiddleNode[]>();
+		_middle_layers = new ArrayList<MiddleNode[]>();
 		_arcz = new ArrayList<Arc>();
+	}
+	
+	public Network(NetworkStruct net_struct) {
+		this();
+		
+		this.setInputLayer(net_struct.getInputPop());
+		
+		for (Integer middp : net_struct.getMiddlezPop()) {
+			this.addMiddleLayer(middp);
+		}
+    	
+		this.setOutputLayer(net_struct.getOutputPop());
+    	
+		this.finalizeStructure();
 	}
 	
 	/**
@@ -55,10 +69,10 @@ public class Network implements Serializable {
     public void addMiddleLayer(int middle_population) {
     	MiddleNode[] _middlez = new MiddleNode[middle_population];
     	for (int ii = 0; ii < _middlez.length; ii++) {
-    		_middlez[ii] = new MiddleNode(learning_rate, momentum);
+    		_middlez[ii] = new MiddleNode(_learning_rate, _momentum);
     	}
     	
-    	_middleLayers.add(_middlez);
+    	_middle_layers.add(_middlez);
     }
     
     /**
@@ -68,7 +82,7 @@ public class Network implements Serializable {
     public void setOutputLayer(int output_population) {
     	_outputz = new OutputNode[output_population];
     	for (int ii = 0; ii < _outputz.length; ii++) {
-    		_outputz[ii] = new OutputNode(learning_rate, momentum);
+    		_outputz[ii] = new OutputNode(_learning_rate, _momentum);
     	}
     }
     
@@ -78,7 +92,7 @@ public class Network implements Serializable {
     public void finalizeStructure() {	
     	MiddleNode[] _middlez;
     	
-    	_middlez = _middleLayers.get(0);
+    	_middlez = _middle_layers.get(0);
     	for (int jj = 0; jj < _inputz.length; jj++) {
     		for (int kk = 0; kk < _middlez.length; kk++) {
     			Arc arc = new Arc();
@@ -87,12 +101,12 @@ public class Network implements Serializable {
     		}
     	}
     	
-    	if (_middleLayers.size() > 1) {
+    	if (_middle_layers.size() > 1) {
     		MiddleNode[] _middle1, _middle2;
     		
-    		for (int ii = 0; ii < _middleLayers.size() - 1; ii++) {
-    			_middle1 = _middleLayers.get(ii);
-    			_middle2 = _middleLayers.get(ii + 1);
+    		for (int ii = 0; ii < _middle_layers.size() - 1; ii++) {
+    			_middle1 = _middle_layers.get(ii);
+    			_middle2 = _middle_layers.get(ii + 1);
     			
     			for (int jj = 0; jj < _middle1.length; jj++) {
     	    		for (int kk = 0; kk < _middle2.length; kk++) {
@@ -104,7 +118,7 @@ public class Network implements Serializable {
     		}
     	}
 	
-    	_middlez = _middleLayers.get(_middleLayers.size() - 1);
+    	_middlez = _middle_layers.get(_middle_layers.size() - 1);
     	for (int jj = 0; jj < _middlez.length; jj++) {
     		for (int kk = 0; kk < _outputz.length; kk++) {
     			Arc arc = new Arc();
@@ -127,7 +141,7 @@ public class Network implements Serializable {
      * @return middle nodes
      */
     public List<MiddleNode[]> getMiddleLayers() {
-    	return (_middleLayers);
+    	return (_middle_layers);
     }
     
     /**
@@ -173,8 +187,8 @@ public class Network implements Serializable {
     		_inputz[ii].setValue(input[ii]);
     	}
 	
-    	for (int ii = 0; ii < _middleLayers.size(); ii++) {
-    		_middlez = _middleLayers.get(ii);
+    	for (int ii = 0; ii < _middle_layers.size(); ii++) {
+    		_middlez = _middle_layers.get(ii);
     		
     		for (int jj = 0; jj < _middlez.length; jj++) {
     			_middlez[jj].runNode();
@@ -209,8 +223,8 @@ public class Network implements Serializable {
     		qerror += Math.pow(_outputz[ii].getOutputError(), 2);
     	}
 	
-    	for (int ii = _middleLayers.size() - 1; ii >= 0; ii--) {
-    		_middlez = _middleLayers.get(ii);
+    	for (int ii = _middle_layers.size() - 1; ii >= 0; ii--) {
+    		_middlez = _middle_layers.get(ii);
     		
     		for (int jj = _middlez.length - 1; jj >= 0; jj--) {
     			_middlez[jj].trainNode();
@@ -252,7 +266,7 @@ public class Network implements Serializable {
     /**
      * Opaque middle layers
      */
-    private List<MiddleNode[]> _middleLayers;
+    private List<MiddleNode[]> _middle_layers;
     
     /**
      * Classifier result
@@ -262,7 +276,7 @@ public class Network implements Serializable {
     /**
      * Learning rate & momentum
      */
-    private double learning_rate, momentum;
+    private double _learning_rate, _momentum;
     
     /**
      * Eclipse generated

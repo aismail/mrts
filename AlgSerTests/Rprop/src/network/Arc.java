@@ -21,11 +21,43 @@ public class Arc extends AbstractArcNode {
     }
     
     /**
+     * Return the input node of the arc
+     * @return input node
+     */
+    public AbstractNode getInputNode() {
+    	return _in;
+    }
+    
+    /**
      * Define output node
      * @param arg output node
      */
     public void setOutputNode(AbstractNode arg) {
         _out = arg;
+    }
+    
+    /**
+     * Return the output node of the arc
+     * @return output node
+     */
+    public AbstractNode getOutputNode() {
+    	return _out;
+    }
+    
+    /**
+     * Set weight value
+     * @param weight value
+     */
+    public void setWeight(double weight) {
+    	_weight = weight;
+    }
+    
+    /**
+     * Return the weight value of an arc
+     * @return weight value
+     */
+    public double getWeight() {
+    	return _weight;
     }
     
     /**
@@ -53,6 +85,14 @@ public class Arc extends AbstractArcNode {
     }
     
     /**
+     * Return the value of the gradient
+     * @return the gradient's value
+     */
+    public double getGradient() {
+    	return _gradient;
+    }
+    
+    /**
      * Update weight's delta by adding new value to current delta
      * @param arg new value added to current delta
      */
@@ -68,7 +108,7 @@ public class Arc extends AbstractArcNode {
     	// (rprop)
     	double change; 
 
-    	if (_deltaw == 0 && _last_deltaw == 0) {
+    	if (_deltaw == 0 && _last_gradient == 0 && _delta == 0.1) {
     		change = Math.signum(_gradient);
     	}
     	else {
@@ -92,15 +132,6 @@ public class Arc extends AbstractArcNode {
     	}
 
     	_gradient = 0;
-    	_last_deltaw = _deltaw;
-    }
-
-    /**
-     * Set weight value
-     * @param weight value
-     */
-    public void setWeight(double weight) {
-    	_weight = weight;
     }
     
 	/**
@@ -146,7 +177,6 @@ public class Arc extends AbstractArcNode {
      * Weight change
      */
     private double _deltaw = 0;
-    private double _last_deltaw = 0;
     
     /**
      * AbstractNode which arc is coming from
