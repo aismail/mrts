@@ -11,8 +11,11 @@ import neuralnet.mapred.dmodel.WGDdW;
 import org.apache.commons.lang.ObjectUtils.Null;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cassdb.Connector;
+import cassdb.interfaces.IHashCl;
 import cassdb.internal.HashCl;
 
 public class Reduce extends Reducer<Text, PairDataWritable, Null, Null> {
@@ -23,8 +26,9 @@ public class Reduce extends Reducer<Text, PairDataWritable, Null, Null> {
 	// Private members
 	private HashMap<Integer, Double> _sumup;
 	private Connector _conx;
-	private HashCl _hash;
+	private IHashCl _hash;
 	private int _node;
+	private static Logger logger = LoggerFactory.getLogger(Reduce.class);
 	
 	/**
 	 * Default constructor
@@ -123,10 +127,14 @@ public class Reduce extends Reducer<Text, PairDataWritable, Null, Null> {
 		// Initialize reduce function
 		this.initReduce(key);
 		
+		logger.info("Reduce function initialized for Node " + key.toString());
+		
 		// Aggregate (sum-up) data from mapping 
 		for (PairDataWritable val : values) {
 			this.sumUpData(val.getDestination(), val.getValue());
 		}
+		
+		logger.info("Gradients aggregated");
 	
 		// Update data
 		for (Entry<Integer, Double> arcg : _sumup.entrySet()) {
@@ -139,5 +147,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, Null, Null> {
 				this.updateOutputError(_node, arcg.getValue());
 			}
 		}
+		
+		logger.info("Data (weight & output error) updated");
 	}
 }

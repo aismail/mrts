@@ -14,8 +14,11 @@ import neuralnet.network.PatternList;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cassdb.Connector;
+import cassdb.interfaces.IHashCl;
 import cassdb.internal.HashCl;
 
 public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
@@ -24,11 +27,12 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 	
 	// Private members
 	private Connector _conx;
-	private HashCl _hash;
+	private IHashCl _hash;
 	private PatternList _pattern;
 	private NetworkStruct _net_struct;
 	private Network _network;
 	private Text _nkey;
+	private static Logger logger = LoggerFactory.getLogger(Map.class);
 	
 	/**
 	 * Default constructor
@@ -86,11 +90,11 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 			output = new double[noutput];
 		
 		for (int i = 0; i < ninput; i++) {
-			input[i] = Double.parseDouble(elems[i].replace("\"", ""));
+			input[i] = Double.parseDouble(elems[i]);
 		}
 		
 		for (int i = ninput; i < ninput + noutput; i++) {
-			output[i - ninput] = Double.parseDouble(elems[i].replace("\"", ""));
+			output[i - ninput] = Double.parseDouble(elems[i]);
 		}
 		
 		_pattern.add(new Pattern(input, output));
@@ -100,9 +104,10 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 	 * Run a train epoch over the pattern list
 	 * @param network neural-network
 	 */
-	public void runEpoch(Network network) {
+	public boolean runEpoch(Network network) {
 		// run_net + train_net
-		int limit = _pattern.size(), success = 0;
+		int limit = _pattern.size();
+		boolean success = false;
 		long run_start, run_end, tot_run = 0, 
 			train_start, train_end, tot_train = 0;
 		double threshold = 0.01;
@@ -138,9 +143,11 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 			}
 	
 			if (pattern.isTrained()) {
-				++success;
+				success = true;
 			}
 		}
+		
+		return success;
 	}
 
 	/**
@@ -153,14 +160,20 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 		// Initialize map function
 		this.initMap();
 		
+		logger.info("Map function initialized");
+		
 		// Parse each line from the chunk
 		String[] vectors = value.toString().split(SPLIT_TOKEN);
 		for (String vector : vectors) {
 			this.addToTrainSet(vector);
 		}
 		
+		logger.info("PatternList for network-train created");
+		
 		// Run one epoch with the train data
-		this.runEpoch(_network);
+		boolean success = this.runEpoch(_network);
+		
+		logger.info("Epoch finnised - success = " + success);
 		
 		// Pass the values to reducers
 		
@@ -171,11 +184,15 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 			context.write(_nkey, pdw);
 		}
 		
+		logger.info("Gradients sent");
+		
 		// PairDataWritable: No <0 Err> 
 		for (OutputNode node : _network.getOutputNodes()) {
 			_nkey.set(new Text(node.getId() + ""));
 			PairDataWritable pdw = new PairDataWritable(node.getOutputError());
 			context.write(_nkey, pdw);
 		}
+		
+		logger.info("OutputErrors sent");
 	}
 }

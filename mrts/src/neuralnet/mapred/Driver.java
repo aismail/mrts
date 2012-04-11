@@ -18,13 +18,18 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cassdb.Connector;
+import cassdb.interfaces.IHashCl;
 import cassdb.internal.HashCl;
 
 public class Driver {
+	// Private members
 	private Connector _conx;
-	private HashCl _hash;
+	private IHashCl _hash;
+	private static Logger logger = LoggerFactory.getLogger(Driver.class);
 	
 	/**
 	 * Default constructor
@@ -93,10 +98,16 @@ public class Driver {
 		net_struct.setOutputPop(2);
 		this.pushNetStruct(net_struct);
 		
+		logger.info("Network structure created & pushed to cassandra");
+		
 		Network network = new Network(net_struct);
 		this.initNetWeights(network);
 		
+		logger.info("Neural network created & weights initialized");
+		
 		Configuration conf = new Configuration();
+		
+		logger.info("Running map-reduce jobs ...");
 		
 		// Run map-reduce jobs until the network has the desired error
 		while (qerr > net_struct.getError()) {
@@ -123,10 +134,14 @@ public class Driver {
 			job.setOutputFormatClass(NullOutputFormat.class);
 		
 			FileInputFormat.setInputPaths(job, new Path(input));
-					
+		
+			logger.info("Job sent to map-reduce cluster");
+			
 			job.waitForCompletion(true);
 			
 			qerr = this.computeQError(network);
+			
+			logger.info("Episode " + ep + " finnished: " + qerr);
 		}
 	}
 	
