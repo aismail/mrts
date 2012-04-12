@@ -68,6 +68,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	 * Batch mode - Resilient backpropagation
 	 * @param input_node input arc node
 	 * @param output_node output arc node
+	 * @param gradient arc gradient value
 	 */
 	public void updateWeight(int input_node, int output_node, double gradient) {
 		double weight, last_gradient, delta, deltaw, change;

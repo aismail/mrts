@@ -79,8 +79,8 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 	}
 	
 	/**
-	 * Adds a line (after parsing) to the pattern list for train
-	 * @param line train vector
+	 * Adds a train vector (after parsing) to the pattern list
+	 * @param vector train-vector
 	 */
 	public void addToTrainSet(String vector) {
 		String[] elems = vector.split(",");
