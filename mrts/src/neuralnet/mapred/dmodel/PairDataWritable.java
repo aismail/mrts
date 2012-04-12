@@ -42,7 +42,7 @@ public class PairDataWritable implements Writable {
 
 	@Override
 	public void write(DataOutput arg0) throws IOException {
-		arg0.write(_destination);
+		arg0.writeInt(_destination);
 		arg0.writeDouble(_value);
 	}
 
