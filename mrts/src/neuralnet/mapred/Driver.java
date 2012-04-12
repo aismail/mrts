@@ -10,9 +10,9 @@ import neuralnet.network.Network;
 import neuralnet.network.NetworkStruct;
 import neuralnet.network.OutputNode;
 
-import org.apache.commons.lang.ObjectUtils.Null;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -123,8 +123,8 @@ public class Driver {
 			job.setMapOutputKeyClass(Text.class);
 			job.setMapOutputValueClass(PairDataWritable.class);
 		
-			job.setOutputKeyClass(Null.class);
-			job.setOutputValueClass(Null.class);
+			job.setOutputKeyClass(BooleanWritable.class);
+			job.setOutputValueClass(BooleanWritable.class);
 		
 			job.setJarByClass(Driver.class);
 			job.setMapperClass(Map.class);

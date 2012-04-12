@@ -8,7 +8,7 @@ import neuralnet.mapred.dmodel.OutputError;
 import neuralnet.mapred.dmodel.PairDataWritable;
 import neuralnet.mapred.dmodel.WGDdW;
 
-import org.apache.commons.lang.ObjectUtils.Null;
+import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.slf4j.Logger;
@@ -18,7 +18,7 @@ import cassdb.Connector;
 import cassdb.interfaces.IHashCl;
 import cassdb.internal.HashCl;
 
-public class Reduce extends Reducer<Text, PairDataWritable, Null, Null> {
+public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, BooleanWritable> {
 	// Constants
 	public static final double NPLUS = 1.2, NMINUS = 0.5, 
 		DMAX = 50, DMIN = 1e-6;
@@ -71,13 +71,13 @@ public class Reduce extends Reducer<Text, PairDataWritable, Null, Null> {
 	 */
 	public void updateWeight(int input_node, int output_node, double gradient) {
 		double weight, last_gradient, delta, deltaw, change;
-		WGDdW old_wgd, new_wgd;
+		WGDdW last_wgd, curr_wgd;
 		
-		old_wgd = (WGDdW) _hash.get(Connector.NET_WGE_COLFAM, input_node, output_node);
-		weight = old_wgd.getWeight();
-		last_gradient = old_wgd.getGradient();
-		delta = old_wgd.getDelta();
-		deltaw = old_wgd.getDeltaW();
+		last_wgd = (WGDdW) _hash.get(Connector.NET_WGE_COLFAM, input_node, output_node);
+		weight = last_wgd.getWeight();
+		last_gradient = last_wgd.getGradient();
+		delta = last_wgd.getDelta();
+		deltaw = last_wgd.getDeltaW();
 		
 		// Do the dew - Rprop 
     	if (deltaw == 0 && last_gradient == 0 && delta == 0.1) {
@@ -103,8 +103,8 @@ public class Reduce extends Reducer<Text, PairDataWritable, Null, Null> {
     		last_gradient = gradient;
     	}
 
-		new_wgd = new WGDdW(weight, last_gradient, delta, deltaw);
-		_hash.put(Connector.NET_WGE_COLFAM, input_node, output_node, new_wgd);
+		curr_wgd = new WGDdW(weight, last_gradient, delta, deltaw);
+		_hash.put(Connector.NET_WGE_COLFAM, input_node, output_node, curr_wgd);
 	}
 	
 	/**
