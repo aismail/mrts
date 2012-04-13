@@ -3,7 +3,6 @@ package neuralnet.mapred;
 import java.io.IOException;
 
 import neuralnet.mapred.dmodel.PairDataWritable;
-import neuralnet.mapred.dmodel.OutputError;
 import neuralnet.mapred.dmodel.WGDdW;
 import neuralnet.network.Arc;
 import neuralnet.network.Network;
@@ -55,6 +54,21 @@ public class Driver {
 	}
 	
 	/**
+	 * Initialize (with 0) network output error
+	 * @param network neural-network
+	 */
+	private void initOutputErrors(Network network) {
+		for (OutputNode anode : network.getOutputNodes()) {
+			Double oerr = new Double(0.0);
+			
+			_hash.put(Connector.NET_WGE_COLFAM,
+					0, // output_errors_row
+					anode.getId(), 
+					oerr);			
+		}
+	}
+	
+	/**
 	 * Compute the mean squared error of the network (quadratic loss)
 	 * @param network neural-network (feedfwd)
 	 * @return mean squared error
@@ -63,13 +77,13 @@ public class Driver {
 		double qerr = 0;
 		
 		for (OutputNode anode : network.getOutputNodes()) {
-			OutputError oerr = (OutputError)_hash.get(Connector.NET_WGE_COLFAM,
+			Double oerr = (Double)_hash.get(Connector.NET_WGE_COLFAM,
 					0, // output_errors_row
 					anode.getId());
-			qerr += Math.pow(oerr.getValue(), 2);			
+			qerr += Math.pow(oerr.doubleValue(), 2);			
 		}
 		
-		return qerr / (double)(network.getOutputNodes().length);
+		return (qerr / (double)(network.getOutputNodes().length));
 	}
 	
 	/**
@@ -89,7 +103,8 @@ public class Driver {
 	 */
 	public void run(String input) 
 		throws IOException, InterruptedException, ClassNotFoundException {
-		double qerr = Double.MAX_VALUE, ep = 0;
+		double qerr = Double.MAX_VALUE;
+		int ep = 0;
 		
 		// [Iter1] Harcoded structure, it should be taken from somewhere else
 		NetworkStruct net_struct = new NetworkStruct(0.1);
@@ -102,8 +117,9 @@ public class Driver {
 		
 		Network network = new Network(net_struct);
 		this.initNetWeights(network);
+		this.initOutputErrors(network);
 		
-		logger.info("Neural network created & weights initialized");
+		logger.info("Neural network created, weights & out_errors initialized");
 		
 		Configuration conf = new Configuration();
 		
@@ -152,6 +168,6 @@ public class Driver {
 	 */
 	public static void main(String[] args) throws Exception {		
 		Driver neuralDriver = new Driver();
-		neuralDriver.run(args[0]);		
+		neuralDriver.run(args[1]);		
 	}
 }

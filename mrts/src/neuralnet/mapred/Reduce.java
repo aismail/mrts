@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import neuralnet.mapred.dmodel.OutputError;
 import neuralnet.mapred.dmodel.PairDataWritable;
 import neuralnet.mapred.dmodel.WGDdW;
 
@@ -74,7 +73,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 		double weight, last_gradient, delta, deltaw, change;
 		WGDdW last_wgd, curr_wgd;
 		
-		last_wgd = (WGDdW) _hash.get(Connector.NET_WGE_COLFAM, input_node, output_node);
+		last_wgd = (WGDdW)_hash.get(Connector.NET_WGE_COLFAM, input_node, output_node);
 		weight = last_wgd.getWeight();
 		last_gradient = last_wgd.getGradient();
 		delta = last_wgd.getDelta();
@@ -114,7 +113,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	 * @param oerr output error of node
 	 */
 	public void updateOutputError(int output_node, double oerr) {
-		OutputError output_error = new OutputError(oerr);
+		Double output_error = new Double(oerr);
 		_hash.put(Connector.NET_WGE_COLFAM, 0, output_node, output_error);
 	}
 	
