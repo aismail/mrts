@@ -11,7 +11,10 @@ package neuralnet.network;
  * @author cbarca
  */
 public class SequenceGenerator {
-
+	/**
+	 * TODO: to_be_removed when we move to _cluster_
+	 */
+	
     /**
      * Each arc/node has a unique identifier. 
      * This was to help w/development, but it doesn't hurt to retain.
@@ -19,6 +22,13 @@ public class SequenceGenerator {
      */
     public static synchronized int getId() {
     	return(_id++);
+    }
+    
+    /**
+     * Reset counting
+     */
+    public static void reset() {
+    	_id = 1;
     }
     
     /**
