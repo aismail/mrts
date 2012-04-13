@@ -55,6 +55,23 @@ public class OutputNode extends AbstractNode {
     	output_error = arg;
     }
     
+    /**
+     * Aggregate the node output error for all 
+     * patterns ran through the train epoch
+     * @param arg
+     */
+    private void aggOutputError(double arg) {
+    	agg_output_error += arg;
+    }
+    
+    /**
+     * Return the sum (aggregation) of all output errors 
+     * @return aggregated output error value
+     */
+    public double getAggOuputError() {
+    	return agg_output_error;
+    }
+    
 	/**
 	 * Update node value by summing weighted inputs
 	 */
@@ -75,6 +92,7 @@ public class OutputNode extends AbstractNode {
 	 */
 	public void trainNode() {
 		output_error = computeOutputError();
+		this.aggOutputError(output_error);
 		error = computeError();
 
 		Iterator<Arc> ii = input_arcs.iterator();
@@ -150,7 +168,12 @@ public class OutputNode extends AbstractNode {
     /**
      * Output error for this node
      */
-    double output_error;
+    double output_error = 0;
+    
+    /**
+     * Aggregate output error
+     */
+    double agg_output_error = 0;
     
     /**
      * Eclipse generated

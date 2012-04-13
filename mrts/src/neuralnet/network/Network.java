@@ -28,6 +28,9 @@ public class Network implements Serializable {
 	 * @param momentum momentun 
 	 */
 	public Network(double learning_rate, double momentum) {
+		// Reset id-counting (begin always from 1)
+		SequenceGenerator.reset();
+		
 		// Useful for Backpropagation
 		// Rprop doesn't use learning rate and momentum
 		_learning_rate = learning_rate;
@@ -37,6 +40,10 @@ public class Network implements Serializable {
 		_arcz = new ArrayList<Arc>();
 	}
 	
+	/**
+	 * Constructor for rprop using net_struct defined
+	 * @param net_struct neural-network structure
+	 */
 	public Network(NetworkStruct net_struct) {
 		this();
 		
