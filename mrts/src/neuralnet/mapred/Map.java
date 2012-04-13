@@ -12,6 +12,7 @@ import neuralnet.network.OutputNode;
 import neuralnet.network.Pattern;
 import neuralnet.network.PatternList;
 
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ import cassdb.Connector;
 import cassdb.interfaces.IHashCl;
 import cassdb.internal.HashCl;
 
-public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
+public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	// Constants
 	public static final String SPLIT_TOKEN = "#";
 	
@@ -42,6 +43,7 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 		_conx = new Connector();
 		_hash = new HashCl(_conx.getKeyspace());
 		_net_struct = pullNetStruct();
+		_nkey = new Text();
 	}
 	
 	/**
@@ -50,7 +52,7 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 	public void initMap() {
 		_pattern = new PatternList();
 		_network = new Network(_net_struct);
-		this.initWeights(_network);
+		this.initNetWeights(_network);
 	}
 	
 	/**
@@ -68,7 +70,11 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 	 * Initialize network's weights with values from cassandra
 	 * @param network neural-network
 	 */
-	private void initWeights(Network network) {
+	private void initNetWeights(Network network) {
+		logger.info("Init weights");
+		logger.info("Hash UP: " + ((_hash == null) ? false : true));
+		logger.info("#Arcs " + network.getArcs().size());
+		
 		for (Arc arc : network.getArcs()) {
 			WGDdW wgd = (WGDdW)_hash.get(Connector.NET_WGE_COLFAM, 
 					arc.getInputNode().getId(), 
@@ -103,11 +109,12 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 	/**
 	 * Run a train epoch over the pattern list
 	 * @param network neural-network
+	 * @return number of successful train iterations
 	 */
-	public boolean runEpoch(Network network) {
+	public int runEpoch(Network network) {
 		// run_net + train_net
 		int limit = _pattern.size();
-		boolean success = false;
+		int success = 0;
 		long run_start, run_end, tot_run = 0, 
 			train_start, train_end, tot_train = 0;
 		double threshold = 0.01;
@@ -135,18 +142,20 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 			int[] results = Mathz.thresholdArray(threshold, raw_results);
 	
 			pattern.setTrained(true);
-			for (int jj = 0; jj < raw_results.length; jj++) {
-				if (results[jj] != truth[jj]) {
+			for (int j = 0; j < raw_results.length; j++) {
+				if (results[j] != truth[j]) {
 					pattern.setTrained(false);
 					break;
 				}
 			}
 	
 			if (pattern.isTrained()) {
-				success = true;
+				success++;
 			}
 		}
 		
+		logger.info("Epoch finnised in " + tot_train + " ms");
+	
 		return success;
 	}
 
@@ -154,9 +163,9 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 	 * Map function   
 	 */
 	@Override
-	public void map(Text key, Text value, Context context) 
+	public void map(LongWritable key, Text value, Context context) 
 		throws IOException, InterruptedException {
-	
+			
 		// Initialize map function
 		this.initMap();
 		
@@ -171,9 +180,10 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 		logger.info("PatternList for network-train created");
 		
 		// Run one epoch with the train data
-		boolean success = this.runEpoch(_network);
+		int success = this.runEpoch(_network);
 		
-		logger.info("Epoch finnised - success = " + success);
+		logger.info("Epoch finnised with success rate = " + success 
+				+ " out of " + _pattern.size());
 		
 		// Pass the values to reducers
 		
@@ -189,7 +199,7 @@ public class Map extends Mapper<Text, Text, Text, PairDataWritable>  {
 		// PairDataWritable: No <0 Err> 
 		for (OutputNode node : _network.getOutputNodes()) {
 			_nkey.set(new Text(node.getId() + ""));
-			PairDataWritable pdw = new PairDataWritable(node.getOutputError());
+			PairDataWritable pdw = new PairDataWritable(node.getAggOuputError());
 			context.write(_nkey, pdw);
 		}
 		
