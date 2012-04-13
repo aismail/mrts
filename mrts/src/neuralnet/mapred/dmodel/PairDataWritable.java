@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.apache.hadoop.io.*;
 
 /**
- * Arc Data  
+ * Pair Data  
  * Hadoop Data Type, for value transfer to reducers.
  * 
  * @author cbarca
@@ -20,6 +20,10 @@ public class PairDataWritable implements Writable {
 	public PairDataWritable(int destination, double value) {
 		_destination = destination;
 		_value = value;
+	}
+	
+	public PairDataWritable() {
+		this(0, 0.0);
 	}
 	
 	public PairDataWritable(double error) {
