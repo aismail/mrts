@@ -129,15 +129,19 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 		
 		logger.info("Reduce function initialized for Node " + key.toString());
 		
+		int cont = 0;
 		// Aggregate (sum-up) data from mapping 
 		for (PairDataWritable val : values) {
 			this.sumUpData(val.getDestination(), val.getValue());
+			cont++;
 		}
 		
-		logger.info("Gradients aggregated");
+		logger.info("Gradients/errors aggregated, list size " + cont);
 	
+		cont = 0;
 		// Update data
 		for (Entry<Integer, Double> arcg : _sumup.entrySet()) {
+			cont++;
 			if (arcg.getKey() != 0) {
 				// Update weights using local adaptive method (Rprop)
 				this.updateWeight(_node, arcg.getKey(), arcg.getValue());
@@ -148,6 +152,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 			}
 		}
 		
-		logger.info("Data (weight & output error) updated");
+		logger.info("Map.entrySet size " + cont);
+		logger.info("Data - weight & output error - updated");
 	}
 }

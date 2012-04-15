@@ -117,7 +117,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		int success = 0;
 		long run_start, run_end, tot_run = 0, 
 			train_start, train_end, tot_train = 0;
-		double threshold = 0.01;
+		double threshold = 0.1;
 		
 		network.resetQError();
 		
@@ -154,7 +154,8 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 			}
 		}
 		
-		logger.info("Epoch finnised in " + tot_train + " ms");
+		logger.info("Epoch finnised in " + tot_train + " ms, " +
+				"with qerr = " + _network.getQError());
 	
 		return success;
 	}
@@ -177,12 +178,13 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 			this.addToTrainSet(vector);
 		}
 		
-		logger.info("PatternList for network-train created");
+		logger.info("PatternList for network-train created, " +
+				"size is " + _pattern.size());
 		
 		// Run one epoch with the train data
 		int success = this.runEpoch(_network);
 		
-		logger.info("Epoch finnised with success rate = " + success 
+		logger.info("Epoch finnised with success rate " + success 
 				+ " out of " + _pattern.size());
 		
 		// Pass the values to reducers
