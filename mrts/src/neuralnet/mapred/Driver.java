@@ -80,7 +80,8 @@ public class Driver {
 			Double oerr = (Double)_hash.get(Connector.NET_WGE_COLFAM,
 					0, // output_errors_row
 					anode.getId());
-			qerr += Math.pow(oerr.doubleValue(), 2);			
+			logger.info("Output error: node = " + anode.getId() + " oerr = " + oerr.doubleValue());
+			qerr += oerr.doubleValue();			
 		}
 		
 		return (qerr / (double)(network.getOutputNodes().length));
@@ -107,7 +108,7 @@ public class Driver {
 		int ep = 0;
 		
 		// [Iter1] Harcoded structure, it should be taken from somewhere else
-		NetworkStruct net_struct = new NetworkStruct(0.1);
+		NetworkStruct net_struct = new NetworkStruct(0.1, 100);
 		net_struct.setInputPop(301);
 		net_struct.addMiddlePop(100);
 		net_struct.setOutputPop(2);
