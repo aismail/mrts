@@ -113,8 +113,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	 * @param oerr output error of node
 	 */
 	public void updateOutputError(int output_node, double oerr) {
-		Double output_error = new Double(oerr);
-		_hash.put(Connector.NET_WGE_COLFAM, 0, output_node, output_error);
+		_hash.put(Connector.NET_WGE_COLFAM, 0, output_node, oerr);
 	}
 	
 	/**
@@ -138,10 +137,8 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 		
 		logger.info("Gradients/errors aggregated, list size " + cont);
 	
-		cont = 0;
 		// Update data
 		for (Entry<Integer, Double> arcg : _sumup.entrySet()) {
-			cont++;
 			if (arcg.getKey() != 0) {
 				// Update weights using local adaptive method (Rprop)
 				this.updateWeight(_node, arcg.getKey(), arcg.getValue());
@@ -152,7 +149,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 			}
 		}
 		
-		logger.info("Map.entrySet size " + cont);
+		logger.info("Map.entrySet size " + _sumup.entrySet().size());
 		logger.info("Data - weight & output error - updated");
 	}
 }
