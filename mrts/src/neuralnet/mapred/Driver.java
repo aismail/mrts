@@ -10,6 +10,7 @@ import neuralnet.network.NetworkStruct;
 import neuralnet.network.OutputNode;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.Text;
@@ -17,6 +18,9 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
+import org.apache.hadoop.util.GenericOptionsParser;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,18 +28,31 @@ import cassdb.Connector;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
-public class Driver {
+public class Driver extends Configured implements Tool {
 	// Private members
 	private Connector _conx;
 	private IHashClient _hash;
 	private static Logger logger = LoggerFactory.getLogger(Driver.class);
+	private Configuration _conf;
 	
 	/**
 	 * Default constructor
 	 */
 	public Driver() {
+		super();
 		_conx = new Connector();
 		_hash = new HashClient(_conx.getKeyspace());
+		_conf = new Configuration();
+		_conf.setBoolean("mapred.used.genericoptionparser", true);
+		super.setConf(_conf);
+	}
+	
+	/**
+	 * Get the job configuration object
+	 * @return configuration object
+	 */
+	public Configuration getJobConfiguration() {
+		return _conf;
 	}
 	
 	/**
@@ -44,11 +61,11 @@ public class Driver {
 	 */
 	private void initNetWeights(Network network) {
 		for (Arc arc : network.getArcs()) {
-			ArcValues wgdw = new ArcValues(arc.getWeight(), 0, 0.1, 0);
+			ArcValues wgd = new ArcValues(arc.getWeight(), 0, 0.1, 0);
 			_hash.put(Connector.NET_WGE_COLFAM, 
 					arc.getInputNode().getId(), 
 					arc.getOutputNode().getId(), 
-					wgdw);
+					wgd);
 		}
 	}
 	
@@ -99,8 +116,9 @@ public class Driver {
 	/**
 	 * Run map-reduce jobs for neural-network training
 	 */
-	public void run(String input) 
-		throws IOException, InterruptedException, ClassNotFoundException {
+	@Override
+	public int run(String[] arg0) throws 
+		Exception, IOException, InterruptedException, ClassNotFoundException {
 		double qerr = Double.MAX_VALUE;
 		int ep = 0;
 		
@@ -119,8 +137,6 @@ public class Driver {
 		
 		logger.info("Neural network created, weights & out_errors initialized");
 		
-		Configuration conf = new Configuration();
-		
 		logger.info("Running map-reduce jobs ...");
 		
 		// Run map-reduce jobs until the network has the desired error
@@ -132,8 +148,8 @@ public class Driver {
 				break;
 			}
 			
-			Job job = new Job(conf, "mrts");
-		
+			Job job = new Job(_conf, "mrts");
+			
 			job.setMapOutputKeyClass(Text.class);
 			job.setMapOutputValueClass(PairDataWritable.class);
 		
@@ -147,7 +163,7 @@ public class Driver {
 			job.setInputFormatClass(TextInputFormat.class);
 			job.setOutputFormatClass(NullOutputFormat.class);
 		
-			FileInputFormat.setInputPaths(job, new Path(input));
+			FileInputFormat.setInputPaths(job, new Path(arg0[1]));
 		
 			logger.info("Job sent to map-reduce cluster");
 			
@@ -157,6 +173,8 @@ public class Driver {
 			
 			logger.info("Episode " + ep + " finnished: " + qerr);
 		}
+		
+		return 0;
 	}
 	
 	/**
@@ -165,7 +183,7 @@ public class Driver {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {		
-		Driver neuralDriver = new Driver();
-		neuralDriver.run(args[1]);		
+		String[] otherArgs = new GenericOptionsParser(args).getRemainingArgs();
+		ToolRunner.run(new Driver(), otherArgs);
 	}
 }
