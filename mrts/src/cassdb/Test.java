@@ -1,20 +1,20 @@
 package cassdb;
 
 import neuralnet.mapred.dmodel.OutputErrorO;
-import neuralnet.mapred.dmodel.WGDdW;
+import neuralnet.mapred.dmodel.ArcValues;
 import neuralnet.network.Arc;
 import neuralnet.network.Network;
 import neuralnet.network.NetworkStruct;
 import neuralnet.network.OutputNode;
-import cassdb.interfaces.IHashCl;
-import cassdb.internal.HashCl;
+import cassdb.interfaces.IHashClient;
+import cassdb.internal.HashClient;
 
 public class Test {
 
 	public static void main(String[] args) {
 		double qerr = 0;
 		Connector conx = new Connector();
-		IHashCl hash = new HashCl(conx.getKeyspace());
+		IHashClient hash = new HashClient(conx.getKeyspace());
 		
 		// Create and put net_struct
 		NetworkStruct net_struct; 
@@ -30,7 +30,7 @@ public class Test {
 		
 		// Initialize weights
 		for (Arc arc : network.getArcs()) {
-			WGDdW wgd = (WGDdW)hash.get(Connector.NET_WGE_COLFAM, 
+			ArcValues wgd = (ArcValues)hash.get(Connector.NET_WGE_COLFAM, 
 					arc.getInputNode().getId(), 
 					arc.getOutputNode().getId());
 			

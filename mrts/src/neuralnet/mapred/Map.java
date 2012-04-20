@@ -3,7 +3,7 @@ package neuralnet.mapred;
 import java.io.IOException;
 
 import neuralnet.mapred.dmodel.PairDataWritable;
-import neuralnet.mapred.dmodel.WGDdW;
+import neuralnet.mapred.dmodel.ArcValues;
 import neuralnet.network.Arc;
 import neuralnet.network.Mathz;
 import neuralnet.network.Network;
@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cassdb.Connector;
-import cassdb.interfaces.IHashCl;
-import cassdb.internal.HashCl;
+import cassdb.interfaces.IHashClient;
+import cassdb.internal.HashClient;
 
 public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	// Constants
@@ -28,7 +28,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	
 	// Private members
 	private Connector _conx;
-	private IHashCl _hash;
+	private IHashClient _hash;
 	private PatternList _pattern;
 	private NetworkStruct _net_struct;
 	private Network _network;
@@ -41,7 +41,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	public Map() {
 		super();
 		_conx = new Connector();
-		_hash = new HashCl(_conx.getKeyspace());
+		_hash = new HashClient(_conx.getKeyspace());
 		_net_struct = pullNetStruct();
 		_nkey = new Text();
 	}
@@ -76,7 +76,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		logger.info("#Arcs " + network.getArcs().size());
 		
 		for (Arc arc : network.getArcs()) {
-			WGDdW wgd = (WGDdW)_hash.get(Connector.NET_WGE_COLFAM, 
+			ArcValues wgd = (ArcValues)_hash.get(Connector.NET_WGE_COLFAM, 
 					arc.getInputNode().getId(), 
 					arc.getOutputNode().getId());
 			

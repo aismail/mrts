@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import neuralnet.mapred.dmodel.PairDataWritable;
-import neuralnet.mapred.dmodel.WGDdW;
+import neuralnet.mapred.dmodel.ArcValues;
 
 import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.Text;
@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cassdb.Connector;
-import cassdb.interfaces.IHashCl;
-import cassdb.internal.HashCl;
+import cassdb.interfaces.IHashClient;
+import cassdb.internal.HashClient;
 
 public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, BooleanWritable> {
 	// Constants
@@ -25,7 +25,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	// Private members
 	private HashMap<Integer, Double> _sumup;
 	private Connector _conx;
-	private IHashCl _hash;
+	private IHashClient _hash;
 	private int _node;
 	private static Logger logger = LoggerFactory.getLogger(Reduce.class);
 	
@@ -35,7 +35,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	public Reduce() {
 		super();
 		_conx = new Connector();
-		_hash = new HashCl(_conx.getKeyspace());
+		_hash = new HashClient(_conx.getKeyspace());
 	}
 	
 	/**
@@ -71,9 +71,9 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	 */
 	public void updateWeight(int input_node, int output_node, double gradient) {
 		double weight, last_gradient, delta, deltaw, change;
-		WGDdW last_wgd, curr_wgd;
+		ArcValues last_wgd, curr_wgd;
 		
-		last_wgd = (WGDdW)_hash.get(Connector.NET_WGE_COLFAM, input_node, output_node);
+		last_wgd = (ArcValues)_hash.get(Connector.NET_WGE_COLFAM, input_node, output_node);
 		weight = last_wgd.getWeight();
 		last_gradient = last_wgd.getGradient();
 		delta = last_wgd.getDelta();
@@ -103,7 +103,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
     		last_gradient = gradient;
     	}
 
-		curr_wgd = new WGDdW(weight, last_gradient, delta, deltaw);
+		curr_wgd = new ArcValues(weight, last_gradient, delta, deltaw);
 		_hash.put(Connector.NET_WGE_COLFAM, input_node, output_node, curr_wgd);
 	}
 	

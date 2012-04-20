@@ -3,7 +3,7 @@ package neuralnet.mapred;
 import java.io.IOException;
 
 import neuralnet.mapred.dmodel.PairDataWritable;
-import neuralnet.mapred.dmodel.WGDdW;
+import neuralnet.mapred.dmodel.ArcValues;
 import neuralnet.network.Arc;
 import neuralnet.network.Network;
 import neuralnet.network.NetworkStruct;
@@ -21,13 +21,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cassdb.Connector;
-import cassdb.interfaces.IHashCl;
-import cassdb.internal.HashCl;
+import cassdb.interfaces.IHashClient;
+import cassdb.internal.HashClient;
 
 public class Driver {
 	// Private members
 	private Connector _conx;
-	private IHashCl _hash;
+	private IHashClient _hash;
 	private static Logger logger = LoggerFactory.getLogger(Driver.class);
 	
 	/**
@@ -35,7 +35,7 @@ public class Driver {
 	 */
 	public Driver() {
 		_conx = new Connector();
-		_hash = new HashCl(_conx.getKeyspace());
+		_hash = new HashClient(_conx.getKeyspace());
 	}
 	
 	/**
@@ -44,7 +44,7 @@ public class Driver {
 	 */
 	private void initNetWeights(Network network) {
 		for (Arc arc : network.getArcs()) {
-			WGDdW wgdw = new WGDdW(arc.getWeight(), 0, 0.1, 0);
+			ArcValues wgdw = new ArcValues(arc.getWeight(), 0, 0.1, 0);
 			
 			_hash.put(Connector.NET_WGE_COLFAM, 
 					arc.getInputNode().getId(), 
