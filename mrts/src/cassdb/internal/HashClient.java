@@ -9,7 +9,7 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.ColumnQuery;
 import me.prettyprint.hector.api.query.QueryResult;
-import cassdb.interfaces.IHashCl;
+import cassdb.interfaces.IHashClient;
 
 /**
  * Hash Client
@@ -17,11 +17,11 @@ import cassdb.interfaces.IHashCl;
  * 
  * @author cbarca
  */
-public class HashCl implements IHashCl {
+public class HashClient implements IHashClient {
 	// Private members
 	private Keyspace _keyspace;
 	
-	public HashCl(Keyspace keyspace) {
+	public HashClient(Keyspace keyspace) {
 		_keyspace = keyspace;
 	}
 	

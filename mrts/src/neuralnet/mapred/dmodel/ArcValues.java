@@ -3,21 +3,22 @@ package neuralnet.mapred.dmodel;
 import java.io.Serializable;
 
 /**
- * Weight Gradient Delta DeltaWeight 
- * Store 4 values important for weight update.
+ * Arc values class 
+ * Stores 4 values (weight, gradient, delta, deltaw) 
+ * important for weight update.
  * 
  * @author cbarca
  */
-public class WGDdW implements Serializable {
+public class ArcValues implements Serializable {
 	// Private members
 	private static final long serialVersionUID = 4786220667714547209L;
 	private double _weight, _gradient, _delta, _deltaw;
 	
-	public WGDdW() {
+	public ArcValues() {
 		this(0.1, 0, 0.1, 0);
 	}
 	
-	public WGDdW(double weight, double gradient, double delta, double deltaw) {
+	public ArcValues(double weight, double gradient, double delta, double deltaw) {
 		_weight = weight;
 		_gradient = gradient;
 		_delta = delta;

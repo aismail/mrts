@@ -5,7 +5,7 @@ package cassdb.interfaces;
  * 
  * @author cbarca
  */
-public interface IHashCl {
+public interface IHashClient {
 	// GET methods
 	public Object get(String colfamName, Integer keyL, Integer keyC);
 	public Object get(String colfamName, String keyL, String keyC);
