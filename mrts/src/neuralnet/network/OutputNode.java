@@ -61,7 +61,7 @@ public class OutputNode extends AbstractNode {
      * @param arg
      */
     private void aggOutputError(double arg) {
-    	agg_output_error += Math.pow(arg, 2);
+    	agg_output_error += (arg * arg);
     }
     
     /**
