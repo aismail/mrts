@@ -45,7 +45,6 @@ public class Driver {
 	private void initNetWeights(Network network) {
 		for (Arc arc : network.getArcs()) {
 			ArcValues wgdw = new ArcValues(arc.getWeight(), 0, 0.1, 0);
-			
 			_hash.put(Connector.NET_WGE_COLFAM, 
 					arc.getInputNode().getId(), 
 					arc.getOutputNode().getId(), 
@@ -58,13 +57,11 @@ public class Driver {
 	 * @param network neural-network
 	 */
 	private void initOutputErrors(Network network) {
-		for (OutputNode anode : network.getOutputNodes()) {
-			Double oerr = new Double(0.0);
-			
+		for (OutputNode anode : network.getOutputNodes()) {			
 			_hash.put(Connector.NET_WGE_COLFAM,
 					0, // output_errors_row
 					anode.getId(), 
-					oerr);			
+					0.0);			
 		}
 	}
 	
