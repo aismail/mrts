@@ -1,9 +1,16 @@
 package neuralnet.mapred;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import neuralnet.mapred.dmodel.PairDataWritable;
 import neuralnet.mapred.dmodel.ArcValues;
+import neuralnet.mapred.util.RunParams;
+import neuralnet.mapred.util.RunParams.InputLocation;
 import neuralnet.network.Arc;
 import neuralnet.network.Network;
 import neuralnet.network.NetworkStruct;
@@ -11,6 +18,8 @@ import neuralnet.network.OutputNode;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.filecache.DistributedCache;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.Text;
@@ -29,11 +38,16 @@ import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
 public class Driver extends Configured implements Tool {
+	// Constants
+	public final static String NAME_NODE = "hdfs://localhost:9000";
+	public static final String SPARAMS_FILENAME = "short_run.xml";
+		
 	// Private members
 	private Connector _conx;
 	private IHashClient _hash;
 	private static Logger logger = LoggerFactory.getLogger(Driver.class);
 	private Configuration _conf;
+	private RunParams _run_params;
 	
 	/**
 	 * Default constructor
@@ -42,6 +56,7 @@ public class Driver extends Configured implements Tool {
 		super();
 		_conx = new Connector();
 		_hash = new HashClient(_conx.getKeyspace());
+		_run_params = new RunParams();
 		_conf = new Configuration();
 		_conf.setBoolean("mapred.used.genericoptionparser", true);
 		super.setConf(_conf);
@@ -105,29 +120,72 @@ public class Driver extends Configured implements Tool {
 	 * Push the network structure to the database
 	 * @param net_struct neural network structure
 	 */
-	private void pushNetStruct(NetworkStruct net_struct) {
-		// [Iter1] Hardcoded keyL & keyC
+	private void pushNetStruct(NetworkStruct net_struct, RunParams run_params) {
 		_hash.put(Connector.NET_STRUCT_COLFAM, 
-				"experiment1", 
-				"structure1", 
+				run_params.getExperimentName(), //"experiment1", 
+				run_params.getNetworkName(), //"structure1", 
 				net_struct);
 	}
 	
 	/**
-	 * Run map-reduce jobs for neural-network training
+	 * Push the mean squared error to the database
+	 * @param epoch train epoch
+	 * @param qerr mean squared error (quadratic loss)
 	 */
-	@Override
-	public int run(String[] arg0) throws 
-		Exception, IOException, InterruptedException, ClassNotFoundException {
+	private void pushQErr(int epoch, double qerr) {
+		_hash.put(Connector.NET_QERR_COLFAM,
+				_run_params.getExperimentName(), //"experiment1", 
+				Integer.toString(epoch), 
+				qerr);
+	}
+	
+	/**
+	 * Read run parameters
+	 * @param local_path path of the parameters file
+	 * @throws FileNotFoundException 
+	 */
+	public void readRunParams(String local_path) 
+		throws FileNotFoundException {
+		BufferedReader fis = new BufferedReader(new FileReader(local_path));
+		_run_params.readFromXML(fis);
+	}
+	
+	/**
+	 * Write -short- run parameters
+	 * @param filename name of the short run parameters file
+	 * @throws IOException 
+	 */
+	public void writeShortRunParams(String filename) 
+		throws IOException {
+		_run_params.shortWriteToXML(filename);
+		FileSystem fs = FileSystem.get(_conf);
+		fs.delete(new Path("/config/" + filename), true);
+		fs.copyFromLocalFile(new Path(filename), new Path("/config/" + filename));
+	}
+	
+	/**
+	 * Share run parameters file to Mappers through distributed cache
+	 * @param local_path path of the parameters file
+	 * @throws URISyntaxException
+	 */
+	public void shareShortRunParams(String filename) 
+		throws URISyntaxException {
+		DistributedCache.addCacheFile(new URI(NAME_NODE + "/config/" + filename), _conf);
+	}
+	
+	/**
+	 * Run job in HDFS mode
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws ClassNotFoundException
+	 */
+	private void runHDFS() 
+		throws IOException, InterruptedException, ClassNotFoundException {
 		double qerr = Double.MAX_VALUE;
 		int ep = 0;
 		
-		// [Iter1] Harcoded structure, it should be taken from somewhere else
-		NetworkStruct net_struct = new NetworkStruct(0.1, 100);
-		net_struct.setInputPop(301);
-		net_struct.addMiddlePop(100);
-		net_struct.setOutputPop(2);
-		this.pushNetStruct(net_struct);
+		NetworkStruct net_struct = _run_params.getNetStruct();
+		this.pushNetStruct(net_struct, _run_params);
 		
 		logger.info("Network structure created & pushed to cassandra");
 		
@@ -163,7 +221,7 @@ public class Driver extends Configured implements Tool {
 			job.setInputFormatClass(TextInputFormat.class);
 			job.setOutputFormatClass(NullOutputFormat.class);
 		
-			FileInputFormat.setInputPaths(job, new Path(arg0[1]));
+			FileInputFormat.setInputPaths(job, new Path(_run_params.getInputPath()));
 		
 			logger.info("Job sent to map-reduce cluster");
 			
@@ -171,7 +229,29 @@ public class Driver extends Configured implements Tool {
 			
 			qerr = this.computeQError(network);
 			
+			this.pushQErr(ep, qerr);
+			
 			logger.info("Episode " + ep + " finnished: " + qerr);
+		}
+	}
+	
+	/**
+	 * Run map-reduce jobs for neural-network training
+	 * @param arg0 path of the run parameters file
+	 */
+	@Override
+	public int run(String[] arg0) 
+		throws Exception, IOException, InterruptedException, ClassNotFoundException {
+		
+		// Read run parameters from local file
+		this.readRunParams(arg0[1]); 
+		this.writeShortRunParams(SPARAMS_FILENAME);
+		this.shareShortRunParams(SPARAMS_FILENAME);
+		
+		logger.info("Run parameters file - read, short write & short share");
+		
+		if (_run_params.getInputLocation().equals(InputLocation.HDFS)) {
+			this.runHDFS();
 		}
 		
 		return 0;

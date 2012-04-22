@@ -1,9 +1,12 @@
 package neuralnet.mapred;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 
 import neuralnet.mapred.dmodel.PairDataWritable;
 import neuralnet.mapred.dmodel.ArcValues;
+import neuralnet.mapred.util.RunParams;
 import neuralnet.network.Arc;
 import neuralnet.network.Mathz;
 import neuralnet.network.Network;
@@ -12,6 +15,9 @@ import neuralnet.network.OutputNode;
 import neuralnet.network.Pattern;
 import neuralnet.network.PatternList;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.filecache.DistributedCache;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -25,6 +31,7 @@ import cassdb.internal.HashClient;
 public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	// Constants
 	public static final String SPLIT_TOKEN = "#";
+	public static final String SPARAMS_FILENAME = "short_run.xml";
 	
 	// Private members
 	private Connector _conx;
@@ -33,6 +40,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	private NetworkStruct _net_struct;
 	private Network _network;
 	private Text _nkey;
+	private RunParams _run_params;
 	private static Logger logger = LoggerFactory.getLogger(Map.class);
 	
 	/**
@@ -42,7 +50,6 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		super();
 		_conx = new Connector();
 		_hash = new HashClient(_conx.getKeyspace());
-		_net_struct = pullNetStruct();
 		_nkey = new Text();
 	}
 	
@@ -59,11 +66,10 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	 * Get the network structure from cassandra
 	 * @return network structure
 	 */
-	public NetworkStruct pullNetStruct() {
-		// [Iter1] Hardcoded keyL and keyC
+	public NetworkStruct pullNetStruct(RunParams run_params) {
 		return (NetworkStruct)_hash.get(Connector.NET_STRUCT_COLFAM, 
-				"experiment1", 
-				"structure1");
+				run_params.getExperimentName(), //"experiment1", 
+				run_params.getNetworkName()); //"structure1"
 	}
 	
 	/**
@@ -117,7 +123,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		int success = 0;
 		long run_start, run_end, tot_run = 0, 
 			train_start, train_end, tot_train = 0;
-		double threshold = 0.1;
+		double threshold = _net_struct.getThreshold();
 		
 		network.resetQError();
 		
@@ -159,14 +165,47 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	
 		return success;
 	}
+	
+	/**
+	 * Read run parameters from distributed cache
+	 * @param conf job configuration
+	 * @throws IOException
+	 */
+	public void readRunParams(Configuration conf) throws IOException {
+		Path[] uris = DistributedCache.getLocalCacheFiles(conf);
+		
+		for (int i = 0; i < uris.length; i++) {
+			if (uris[i].toString().contains(SPARAMS_FILENAME)) {
+				BufferedReader fis = new BufferedReader(new FileReader(uris[i].toString()));
+				_run_params.readFromXML(fis);
+			}
+		}
+	}
 
+	/**
+	 * Map setup function
+	 */
+	@Override
+	protected void setup(Mapper<LongWritable, Text, Text, PairDataWritable>.Context context) 
+		throws IOException, InterruptedException {
+		
+		_run_params = new RunParams();
+		
+		// Read run parameters
+		this.readRunParams(context.getConfiguration());
+		
+		logger.info("Short run parameters read");
+		
+		_net_struct = pullNetStruct(_run_params);
+	}
+		
 	/**
 	 * Map function   
 	 */
 	@Override
 	public void map(LongWritable key, Text value, Context context) 
 		throws IOException, InterruptedException {
-			
+		
 		// Initialize map function
 		this.initMap();
 		
