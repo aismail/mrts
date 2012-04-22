@@ -13,16 +13,25 @@ import java.util.List;
 public class NetworkStruct implements Serializable {
 	// Private members
 	private static final long serialVersionUID = 1L;
-	private double _error = 0.1; 
+	private double _error = 0.1, _threshold = 0.1; 
 	private int _ninput, _noutput, _max_epochs = -1;
 	private List<Integer> _nmiddlez;
 	
-	public NetworkStruct(double error) {
-		this(error, -1);
+	public NetworkStruct() {
+		this(0.1, 0.1, -1);
 	}
 	
-	public NetworkStruct(double err, int max_epochs) {
-		_error = err;
+	public NetworkStruct(double error) {
+		this(error, 0.1);
+	}
+	
+	public NetworkStruct(double error, double threshold) {
+		this(error, threshold, -1);
+	}
+	
+	public NetworkStruct(double error, double threshold, int max_epochs) {
+		_error = error;
+		_threshold = threshold;
 		_max_epochs = max_epochs;
 		
 		_nmiddlez = new ArrayList<Integer>();
@@ -53,8 +62,24 @@ public class NetworkStruct implements Serializable {
 		return _nmiddlez;
 	}
 	
+	public void setError(double error) {
+		_error = error;
+	}
+	
 	public double getError() {
 		return _error;
+	}
+	
+	public void setThreshold(double threshold) {
+		_threshold = threshold;
+	}
+	
+	public double getThreshold() {
+		return _threshold;
+	}
+	
+	public void setMaxEpochs(int max_epochs) {
+		_max_epochs = max_epochs;
 	}
 	
 	public int getMaxEpochs() {
