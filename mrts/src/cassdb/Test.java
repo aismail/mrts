@@ -1,6 +1,5 @@
 package cassdb;
 
-import neuralnet.mapred.dmodel.OutputErrorO;
 import neuralnet.mapred.dmodel.ArcValues;
 import neuralnet.network.Arc;
 import neuralnet.network.Network;
@@ -39,10 +38,10 @@ public class Test {
 		
 		// Get output errors
 		for (OutputNode anode : network.getOutputNodes()) {
-			OutputErrorO oerr = (OutputErrorO)hash.get(Connector.NET_WGE_COLFAM,
+			double oerr = (Double)hash.get(Connector.NET_WGE_COLFAM,
 					0, // output_errors_row
 					anode.getId());
-			qerr += Math.pow(oerr.getValue(), 2);			
+			qerr += oerr;			
 		}
 		
 		// Print mean squared error (a.k.a quadratic loss)
