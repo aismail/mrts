@@ -25,6 +25,7 @@ public class Connector {
 	public static final String NET_STRUCT_COLFAM = "NetStruct";
 	public static final String NET_WGE_COLFAM = "NetWGE";
 	public static final String NET_SER_COLFAM = "NetSer";
+	public static final String NET_QERR_COLFAM = "NetQErr";
 	
 	// Private members
 	private Cluster _mrtsCluster;
@@ -74,11 +75,16 @@ public class Connector {
 				NET_SER_COLFAM,
 				ComparatorType.UTF8TYPE);	
 		
+		ColumnFamilyDefinition netQErrCfDef = HFactory.createColumnFamilyDefinition(
+				keyspaceName, 
+				NET_QERR_COLFAM,
+				ComparatorType.UTF8TYPE);
+		
 		KeyspaceDefinition ksDef = HFactory.createKeyspaceDefinition(
 				keyspaceName, 
 				ThriftKsDef.DEF_STRATEGY_CLASS,
 				1,
-				Arrays.asList(netStructCfDef, netWGECfDef, netSerCfDef));
+				Arrays.asList(netStructCfDef, netWGECfDef, netSerCfDef, netQErrCfDef));
 		
 		_mrtsCluster.addKeyspace(ksDef, true);
 		
