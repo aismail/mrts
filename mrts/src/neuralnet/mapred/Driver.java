@@ -183,6 +183,7 @@ public class Driver extends Configured implements Tool {
 		throws IOException, InterruptedException, ClassNotFoundException {
 		double qerr = Double.MAX_VALUE;
 		int ep = 0;
+		long te1, te2, tep, tt1, tt2, ttotal;
 		
 		NetworkStruct net_struct = _run_params.getNetStruct();
 		this.pushNetStruct(net_struct, _run_params);
@@ -195,9 +196,13 @@ public class Driver extends Configured implements Tool {
 		
 		logger.info("Neural network created, weights & out_errors initialized");
 		
-		logger.info("Running map-reduce jobs ...");
+		logger.info("Begin training, running map-reduce jobs ...");
 		
-		// Run map-reduce jobs until the network has the desired error
+		// Start timer
+		tt1 = System.currentTimeMillis();
+		
+		// Run map-reduce jobs until the network has 
+		// the desired error value
 		while (qerr > net_struct.getError()) {
 			ep++;
 			
@@ -224,6 +229,9 @@ public class Driver extends Configured implements Tool {
 			FileInputFormat.setInputPaths(job, new Path(_run_params.getInputPath()));
 		
 			logger.info("Job sent to map-reduce cluster");
+		
+			// Start timer
+			te1 = System.currentTimeMillis(); 
 			
 			job.waitForCompletion(true);
 			
@@ -231,8 +239,19 @@ public class Driver extends Configured implements Tool {
 			
 			this.pushQErr(ep, qerr);
 			
-			logger.info("Episode " + ep + " finnished: " + qerr);
+			// Stop timer
+			te2 = System.currentTimeMillis();
+			
+			tep = (te2 - te1) / 1000;
+			logger.info("Episode " + ep + " finnished with " + 
+					qerr + " qerr in " + tep + " sec");
 		}
+		
+		// Stop timer
+		tt2 = System.currentTimeMillis();
+		
+		ttotal = (tt2 - tt1) / 1000;
+		logger.info("Total train time: " + ttotal + " sec");
 	}
 	
 	/**
