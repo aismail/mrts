@@ -1,8 +1,5 @@
 package neuralnet.network;
 
-/**
- * Facade for backpropagation neural network.
- */
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * Facade for rprop neural network
+ * Facade for Resilient Backpropagation neural network
  *
  * @author gsc
  * @author cbarca
@@ -73,7 +70,8 @@ public class Rprop {
     	do {
     		success = 0;
     		_network.resetQError();
-	    
+    		_network.resetAggOutputError();
+    		
     		for (int ii = 0; ii < limit; ii++) {
     			Pattern pattern = patternz.get(ii);
 	
@@ -139,7 +137,7 @@ public class Rprop {
     }
     
     /**
-     * Persist this BP network to a file
+     * Persist this rprop network to a file
      * @param file to save
      * @throws IOException if problem
      * @throws FileNotFoundException if problem
@@ -151,7 +149,7 @@ public class Rprop {
     }
     
     /**
-     * Current BP network
+     * Current rprop network
      */
     private Network _network;
 }

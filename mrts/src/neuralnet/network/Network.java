@@ -247,11 +247,20 @@ public class Network implements Serializable {
     }
     
     /**
-     * Update weights in graph
+     * Update network's weights
      */
     public void updateWeights() {
     	for (Arc arc : _arcz) {
     		arc.updateWeight();
+    	}
+    }
+    
+    /**
+     * Reset aggregated output error of output nodes
+     */
+    public void resetAggOutputError() {
+    	for (int i = 0; i < _outputz.length; i++) {
+    		_outputz[i].resetAggOutputError();
     	}
     }
     

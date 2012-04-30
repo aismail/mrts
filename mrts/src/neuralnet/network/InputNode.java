@@ -2,10 +2,6 @@ package neuralnet.network;
 
 /**
  * Concrete input node
- */
-
-/**
- * Concrete input node
  *
  * @author gsc
  * @author cbarca

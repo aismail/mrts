@@ -1,8 +1,5 @@
 package neuralnet.network;
 
-/**
- * Abstract parent for nodes
- */
 import java.util.ArrayList;
 import java.util.Iterator;
 

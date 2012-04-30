@@ -1,8 +1,5 @@
 package neuralnet.network;
 
-/**
- * Concrete output node
- */
 import java.util.Iterator;
 
 /**
@@ -62,6 +59,13 @@ public class OutputNode extends AbstractNode {
      */
     private void aggOutputError(double arg) {
     	agg_output_error += (arg * arg);
+    }
+
+    /**
+     * Reset aggregated output square error
+     */
+    public void resetAggOutputError() {
+    	agg_output_error = 0;
     }
     
     /**

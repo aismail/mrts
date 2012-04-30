@@ -1,8 +1,5 @@
 package neuralnet.network;
 
-/**
- * Abstract parent for arcs and nodes
- */
 import java.io.Serializable;
 
 /**

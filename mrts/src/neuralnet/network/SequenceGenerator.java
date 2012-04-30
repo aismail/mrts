@@ -2,10 +2,6 @@ package neuralnet.network;
 
 /**
  * Provide unique ID for arcs/nodes
- */
-
-/**
- * Provide unique ID for arcs/nodes
  * 
  * @author gsc
  * @author cbarca

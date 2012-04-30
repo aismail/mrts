@@ -1,8 +1,5 @@
 package neuralnet.network;
 
-/**
- * Math support, all static methods
- */
 import java.util.Random;
 
 /**

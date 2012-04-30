@@ -2,10 +2,6 @@ package neuralnet.network;
 
 /**
  * Arcs connect nodes
- */
-
-/**
- * Arcs connect nodes
  *
  * @author gsc
  * @author cbarca

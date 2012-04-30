@@ -1,8 +1,5 @@
 package neuralnet.network;
 
-/**
- * Concrete middle node
- */
 import java.util.Iterator;
 
 /**

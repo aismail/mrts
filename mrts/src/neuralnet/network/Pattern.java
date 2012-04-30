@@ -1,8 +1,5 @@
 package neuralnet.network;
 
-/**
- * Pattern container
- */
 import java.io.Serializable;
 
 /**

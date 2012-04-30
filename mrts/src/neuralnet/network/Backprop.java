@@ -1,8 +1,5 @@
 package neuralnet.network;
 
-/**
- * Facade for backpropagation neural network.
- */
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * Facade for backpropagation neural network
+ * Facade for Backpropagation neural network
  *
  * @author gsc
  * @author cbarca
@@ -80,7 +77,8 @@ public class Backprop {
     	do {
     		success = 0;
     		_network.resetQError();
-	    
+    		_network.resetAggOutputError();
+    		
     		for (int ii = 0; ii < limit; ii++) {
     			Pattern pattern = patternz.get(ii);
 	
@@ -97,7 +95,7 @@ public class Backprop {
     			tot_train += (train_end - train_start);
     
     			// Online mode
-    			//_network.updateWeights();
+    			_network.updateWeights();
     			
     			int[] truth = Mathz.thresholdArray(threshold, pattern.getOutput());
     			int[] results = Mathz.thresholdArray(threshold, raw_results);
@@ -116,7 +114,7 @@ public class Backprop {
     		}
     		
     		// Batch mode
-    		_network.updateWeights();
+    		// _network.updateWeights();
 	    
     		if (max_success < success) {
     			max_success = success;
@@ -149,7 +147,7 @@ public class Backprop {
     }
     
     /**
-     * Persist this BP network to a file
+     * Persist this backprop network to a file
      * 
      * @param file to save
      * @throws IOException if problem
@@ -162,7 +160,7 @@ public class Backprop {
     }
     
     /**
-     * Current BP network
+     * Current backprop network
      */
     private Network _network;
 }
