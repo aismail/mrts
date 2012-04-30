@@ -126,6 +126,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		double threshold = _net_struct.getThreshold();
 		
 		network.resetQError();
+		network.resetAggOutputError();
 		
 		for (int i = 0; i < limit; i++) {
 			Pattern pattern = _pattern.get(i);
