@@ -13,13 +13,14 @@ import cassdb.interfaces.IHashClient;
 
 /**
  * Hash Client
- * Hash over cassandra database.
+ * Hash over cassandra database
  * 
  * @author cbarca
  */
 public class HashClient implements IHashClient {
 	// Private members
 	private Keyspace _keyspace;
+	private Mutator<Integer> _batchMutator;
 	
 	public HashClient(Keyspace keyspace) {
 		_keyspace = keyspace;
@@ -27,7 +28,7 @@ public class HashClient implements IHashClient {
 	
 	/**
 	 * Get the value from colfamName<keyL, keyC>
-	 * @param colfamName name of column family
+	 * @param colfamName column family name
 	 * @param keyL line key
 	 * @param keyC column key
 	 * @return value of the column, object type
@@ -48,7 +49,7 @@ public class HashClient implements IHashClient {
 
 	/**
 	 * Get the value from colfamName<keyL, keyC>
-	 * @param colfamName name of column family
+	 * @param colfamName column family name
 	 * @param keyL line key
 	 * @param keyC column key
 	 * @return value of the column, object type
@@ -69,7 +70,7 @@ public class HashClient implements IHashClient {
 
 	/**
 	 * Put a value to colfamName<keyL, keyC>
-	 * @param colfamName name of column family
+	 * @param colfamName column family name
 	 * @param keyL line key
 	 * @param keyC column key
 	 */
@@ -83,7 +84,7 @@ public class HashClient implements IHashClient {
 
 	/**
 	 * Put a value to colfamName<keyL, keyC>
-	 * @param colfamName name of column family
+	 * @param colfamName column family name
 	 * @param keyL line key
 	 * @param keyC column key
 	 */
@@ -93,5 +94,59 @@ public class HashClient implements IHashClient {
 		
 		mutator.insert(keyL, colfamName, 
 				HFactory.createColumn(keyC, value, StringSerializer.get(), ObjectSerializer.get()));
+	}
+	
+	/**
+	 * Start batch put session
+	 */
+	@Override
+	public void startBatchPut() {
+		_batchMutator = HFactory.createMutator(_keyspace, IntegerSerializer.get());
+	}
+	
+	/**
+	 * Batch version of put operation
+	 * @param colfamName column family name
+	 * @param keyL line key
+	 * @param keyC column key
+	 */
+	@Override
+	public void batchPut(String colfamName, Integer keyL, Integer keyC, Object value) {
+		_batchMutator.addInsertion(keyL, colfamName, 
+				HFactory.createColumn(keyC, value, IntegerSerializer.get(), ObjectSerializer.get()));
+	}
+
+	/**
+	 * Finalize batch put session
+	 */
+	@Override
+	public void finalizeBatchBut() {
+		_batchMutator.execute();
+	}
+
+	/**
+	 * Remove the value from colfamName<keyL, keyC>  
+	 * @param colfamName name of column family
+	 * @param keyL
+	 * @param keyC
+	 */
+	@Override
+	public void remove(String colfamName, Integer keyL, Integer keyC) {
+		Mutator<Integer> mutator = HFactory.createMutator(_keyspace, IntegerSerializer.get());
+		
+		mutator.delete(keyL, colfamName, keyC, IntegerSerializer.get());		
+	}
+
+	/**
+	 * Put a value to colfamName<keyL, keyC>
+	 * @param colfamName column family name
+	 * @param keyL line key
+	 * @param keyC column key
+	 */
+	@Override
+	public void remove(String colfamName, String keyL, String keyC) {
+		Mutator<String> mutator = HFactory.createMutator(_keyspace, StringSerializer.get());
+		
+		mutator.delete(keyL, colfamName, keyC, StringSerializer.get());
 	}
 }

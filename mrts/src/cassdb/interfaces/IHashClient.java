@@ -13,4 +13,11 @@ public interface IHashClient {
 	// PUT methods
 	public void put(String colfamName, Integer keyL, Integer keyC, Object value);
 	public void put(String colfamName, String keyL, String keyC, Object value);
+	public void startBatchPut();
+	public void batchPut(String colfamName, Integer keyL, Integer keyC, Object value);
+	public void finalizeBatchBut();
+	
+	// REMOVE methods
+	public void remove(String colfamName, Integer keyL, Integer keyC);
+	public void remove(String colfamName, String keyL, String keyC);
 }
