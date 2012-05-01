@@ -5,6 +5,5 @@ Hector Tests (Java projects)
 1. BasicExamples: basic examples of using Hector API
 2. TimeSeriesDB: an implemention of sharded time-series database [_not_yet_pushed_]
 3. TimeSeriesDBe(easy): an implemention of timestamp-row time-series database 
-4.
 
 
