@@ -6,11 +6,11 @@ Map-Reduce for Time Series [MRTS Workspace]
 Branch: master
 
 1) mrts - main_project
-2) fnn [TODO]
+2) fnn - feedforward neural network engine
 
 Branch: tmaster
 
-1)
-2)
-3)
+1) AlgSerTests - tests on serial neural network algorithms
+2) HectorTests - hector-framework demo/tests
+3) HadoopTests - hadoop-framework demo/tests
 
