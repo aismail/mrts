@@ -120,7 +120,7 @@ public class HashClient implements IHashClient {
 	 * Finalize batch put session
 	 */
 	@Override
-	public void finalizeBatchBut() {
+	public void finalizeBatchPut() {
 		_batchMutator.execute();
 	}
 

@@ -15,7 +15,7 @@ public interface IHashClient {
 	public void put(String colfamName, String keyL, String keyC, Object value);
 	public void startBatchPut();
 	public void batchPut(String colfamName, Integer keyL, Integer keyC, Object value);
-	public void finalizeBatchBut();
+	public void finalizeBatchPut();
 	
 	// REMOVE methods
 	public void remove(String colfamName, Integer keyL, Integer keyC);
