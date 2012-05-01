@@ -1,0 +1,8 @@
+
+Backpropagation Algorithm
+- online & batch
+- multiple layers
+- mean squared error
+- network serialization
+- train inputs encapsulated in patterns
+
