@@ -7,8 +7,10 @@ License:	GPL
 
 Dependencies:
 	- Hector API
-	- Log4j library
+	- Sl4j library
 	- Hadoop Core API
+	- JDom Library
+	- OpenCSV library
 
 Description:
 	TODO
