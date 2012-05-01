@@ -2,6 +2,8 @@ package cassdb;
 
 import java.util.Arrays;
 
+import cassdb.interfaces.IConnector;
+
 import me.prettyprint.cassandra.service.ThriftKsDef;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.Keyspace;
@@ -16,7 +18,7 @@ import me.prettyprint.hector.api.factory.HFactory;
  * @author cbarca
  * @email cristi.barca@gmail.com
  */
-public class Connector {
+public class Connector implements IConnector {
 	// Constants
 	public static final String MRTS_CLUSTERNAME = "mrtscluster";
 	public static final String MRTS_CLUSTERADDR = "emerald:9160";
@@ -49,7 +51,7 @@ public class Connector {
 		KeyspaceDefinition ksDef = _mrtsCluster.describeKeyspace(keyspaceName);
 		
 		if (ksDef == null) {
-			createSchema(keyspaceName);
+			this.createSchema(keyspaceName);
 			return;
 		}
 		
@@ -59,7 +61,7 @@ public class Connector {
 	/**
 	 * Creates the database schema (if is not yet created)
 	 */
-	private void createSchema(String keyspaceName) {
+	public void createSchema(String keyspaceName) {
 		ColumnFamilyDefinition netStructCfDef = HFactory.createColumnFamilyDefinition(
 				keyspaceName, 
 				NET_STRUCT_COLFAM,
