@@ -44,7 +44,7 @@ public class RunParams {
 	 * @author cbarca
 	 */
 	public enum InputLocation {
-		HDFS, Cassandra, Local;
+		HDFS, Cassandra;
 	}
 
 	/**
