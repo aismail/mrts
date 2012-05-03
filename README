@@ -7,8 +7,8 @@ Branch: master
 
 1) mrts - main project (map-reduce for time series)
 2) fnn - feedforward neural network engine
-3) cassdb - cassandra database wrapper
-4) mrts-io - mrts input-output importers/exporters
+3) cassdb - cassandra database wrapper using hector api
+4) mrts-io - mrts input-output (importer/exporter)
 5) mrts-client - mrts client side controller
 
 Branch: tmaster
