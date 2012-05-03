@@ -8,6 +8,5 @@ import me.prettyprint.hector.api.Keyspace;
  * @author cbarca
  */
 public interface IConnector {
-	void createSchema(String keyspaceName);
 	Keyspace getKeyspace();
 }
