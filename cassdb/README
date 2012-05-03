@@ -1,0 +1,11 @@
+
+Project:	cassdb - cassandra database wrapper using hector api
+Author:		cbarca, cristi.barca@gmail.com
+License:	GPL
+
+Dependencies:
+	- Hector Core API
+
+Description:
+	TODO
+
