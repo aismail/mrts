@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<params>
+	<experiment name="experiment1">
+		<inputpath location="LocalDir">./dataset</inputpath>
+		<outputpath format="CSV">/local/output_path</outputpath>
+		<network name="structure1">
+			<inputpop>301</inputpop>
+			<middlepop>100</middlepop>
+			<outputpop>2</outputpop>
+			<error>0.1</error>
+			<threshold>0.1</threshold>
+			<maxepochs>100</maxepochs>
+		</network>
+	</experiment>
+</params>
