@@ -1,12 +1,15 @@
 
-Workspace
+WORKSPACE
 
 Map-Reduce for Time Series [MRTS Workspace]
 
 Branch: master
 
-1) mrts - main_project
+1) mrts - main project (map-reduce for time series)
 2) fnn - feedforward neural network engine
+3) cassdb - cassandra database wrapper
+4) mrts-io - mrts input-output importers/exporters
+5) mrts-client - mrts client side controller
 
 Branch: tmaster
 
