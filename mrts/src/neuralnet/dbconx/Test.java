@@ -1,4 +1,4 @@
-package cassdb;
+package neuralnet.dbconx;
 
 import neuralnet.mapred.dmodel.ArcValues;
 import neuralnet.network.Arc;
