@@ -1,0 +1,12 @@
+
+Project:	mrts-client - mrts client side controller
+Author:		cbarca, cristi.barca@gmail.com
+License:	GPL
+
+Dependencies:
+	- mrts-io
+	- fnn
+
+Description:
+	TODO
+
