@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import neuralnet.dbconx.MrtsConnector;
 import neuralnet.mapred.dmodel.PairDataWritable;
 import neuralnet.mapred.dmodel.ArcValues;
 import neuralnet.mapred.util.RunParams;
@@ -33,7 +34,7 @@ import org.apache.hadoop.util.ToolRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cassdb.MrtsConnector;
+import cassdb.interfaces.IConnector;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
@@ -43,7 +44,7 @@ public class Driver extends Configured implements Tool {
 	public static final String SPARAMS_FILENAME = "short_run.xml";
 		
 	// Private members
-	private MrtsConnector _conx;
+	private IConnector _conx;
 	private IHashClient _hash;
 	private static Logger logger = LoggerFactory.getLogger(Driver.class);
 	private Configuration _conf;

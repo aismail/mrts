@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import neuralnet.dbconx.MrtsConnector;
 import neuralnet.mapred.dmodel.PairDataWritable;
 import neuralnet.mapred.dmodel.ArcValues;
 
@@ -13,7 +14,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cassdb.MrtsConnector;
+import cassdb.interfaces.IConnector;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
@@ -24,7 +25,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	
 	// Private members
 	private HashMap<Integer, Double> _sumup;
-	private MrtsConnector _conx;
+	private IConnector _conx;
 	private IHashClient _hash;
 	private int _node;
 	private static Logger logger = LoggerFactory.getLogger(Reduce.class);

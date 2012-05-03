@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import neuralnet.dbconx.MrtsConnector;
 import neuralnet.mapred.dmodel.PairDataWritable;
 import neuralnet.mapred.dmodel.ArcValues;
 import neuralnet.mapred.util.RunParams;
@@ -24,7 +25,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cassdb.MrtsConnector;
+import cassdb.interfaces.IConnector;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
@@ -34,7 +35,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	public static final String SPARAMS_FILENAME = "short_run.xml";
 	
 	// Private members
-	private MrtsConnector _conx;
+	private IConnector _conx;
 	private IHashClient _hash;
 	private PatternList _pattern;
 	private NetworkStruct _net_struct;
