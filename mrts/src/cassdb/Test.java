@@ -12,12 +12,12 @@ public class Test {
 
 	public static void main(String[] args) {
 		double qerr = 0;
-		Connector conx = new Connector();
+		MrtsConnector conx = new MrtsConnector();
 		IHashClient hash = new HashClient(conx.getKeyspace());
 		
 		// Create and put net_struct
 		NetworkStruct net_struct; 
-		net_struct = (NetworkStruct)hash.get(Connector.NET_STRUCT_COLFAM, 
+		net_struct = (NetworkStruct)hash.get(MrtsConnector.NET_STRUCT_COLFAM, 
 						"experiment1", 
 						"structure1");
 		
@@ -29,7 +29,7 @@ public class Test {
 		
 		// Initialize weights
 		for (Arc arc : network.getArcs()) {
-			ArcValues wgd = (ArcValues)hash.get(Connector.NET_WGE_COLFAM, 
+			ArcValues wgd = (ArcValues)hash.get(MrtsConnector.NET_WGE_COLFAM, 
 					arc.getInputNode().getId(), 
 					arc.getOutputNode().getId());
 			
@@ -38,7 +38,7 @@ public class Test {
 		
 		// Get output errors
 		for (OutputNode anode : network.getOutputNodes()) {
-			double oerr = (Double)hash.get(Connector.NET_WGE_COLFAM,
+			double oerr = (Double)hash.get(MrtsConnector.NET_WGE_COLFAM,
 					0, // output_errors_row
 					anode.getId());
 			qerr += oerr;			

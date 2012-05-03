@@ -13,7 +13,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cassdb.Connector;
+import cassdb.MrtsConnector;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
@@ -24,7 +24,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	
 	// Private members
 	private HashMap<Integer, Double> _sumup;
-	private Connector _conx;
+	private MrtsConnector _conx;
 	private IHashClient _hash;
 	private int _node;
 	private static Logger logger = LoggerFactory.getLogger(Reduce.class);
@@ -34,7 +34,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	 */
 	public Reduce() {
 		super();
-		_conx = new Connector();
+		_conx = new MrtsConnector();
 		_hash = new HashClient(_conx.getKeyspace());
 	}
 	
@@ -73,7 +73,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 		double weight, last_gradient, delta, deltaw, change;
 		ArcValues last_wgd, curr_wgd;
 		
-		last_wgd = (ArcValues)_hash.get(Connector.NET_WGE_COLFAM, input_node, output_node);
+		last_wgd = (ArcValues)_hash.get(MrtsConnector.NET_WGE_COLFAM, input_node, output_node);
 		weight = last_wgd.getWeight();
 		last_gradient = last_wgd.getGradient();
 		delta = last_wgd.getDelta();
@@ -104,7 +104,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
     	}
 
 		curr_wgd = new ArcValues(weight, last_gradient, delta, deltaw);
-		_hash.put(Connector.NET_WGE_COLFAM, input_node, output_node, curr_wgd);
+		_hash.put(MrtsConnector.NET_WGE_COLFAM, input_node, output_node, curr_wgd);
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	 * @param oerr output error of node
 	 */
 	public void updateOutputError(int output_node, double oerr) {
-		_hash.put(Connector.NET_WGE_COLFAM, 0, output_node, oerr);
+		_hash.put(MrtsConnector.NET_WGE_COLFAM, 0, output_node, oerr);
 	}
 	
 	/**

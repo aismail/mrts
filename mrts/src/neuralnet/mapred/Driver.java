@@ -33,7 +33,7 @@ import org.apache.hadoop.util.ToolRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cassdb.Connector;
+import cassdb.MrtsConnector;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
@@ -43,7 +43,7 @@ public class Driver extends Configured implements Tool {
 	public static final String SPARAMS_FILENAME = "short_run.xml";
 		
 	// Private members
-	private Connector _conx;
+	private MrtsConnector _conx;
 	private IHashClient _hash;
 	private static Logger logger = LoggerFactory.getLogger(Driver.class);
 	private Configuration _conf;
@@ -54,7 +54,7 @@ public class Driver extends Configured implements Tool {
 	 */
 	public Driver() {
 		super();
-		_conx = new Connector();
+		_conx = new MrtsConnector();
 		_hash = new HashClient(_conx.getKeyspace());
 		_run_params = new RunParams();
 		_conf = new Configuration();
@@ -77,7 +77,7 @@ public class Driver extends Configured implements Tool {
 	private void initNetWeights(Network network) {
 		for (Arc arc : network.getArcs()) {
 			ArcValues wgd = new ArcValues(arc.getWeight(), 0, 0.1, 0);
-			_hash.put(Connector.NET_WGE_COLFAM, 
+			_hash.put(MrtsConnector.NET_WGE_COLFAM, 
 					arc.getInputNode().getId(), 
 					arc.getOutputNode().getId(), 
 					wgd);
@@ -90,7 +90,7 @@ public class Driver extends Configured implements Tool {
 	 */
 	private void initOutputErrors(Network network) {
 		for (OutputNode anode : network.getOutputNodes()) {			
-			_hash.put(Connector.NET_WGE_COLFAM,
+			_hash.put(MrtsConnector.NET_WGE_COLFAM,
 					0, // output_errors_row
 					anode.getId(), 
 					0.0);			
@@ -106,7 +106,7 @@ public class Driver extends Configured implements Tool {
 		double qerr = 0;
 		
 		for (OutputNode anode : network.getOutputNodes()) {
-			Double oerr = (Double)_hash.get(Connector.NET_WGE_COLFAM,
+			Double oerr = (Double)_hash.get(MrtsConnector.NET_WGE_COLFAM,
 					0, // output_errors_row
 					anode.getId());
 			logger.info("Output error: node = " + anode.getId() + " oerr = " + oerr.doubleValue());
@@ -121,7 +121,7 @@ public class Driver extends Configured implements Tool {
 	 * @param net_struct neural network structure
 	 */
 	private void pushNetStruct(NetworkStruct net_struct, RunParams run_params) {
-		_hash.put(Connector.NET_STRUCT_COLFAM, 
+		_hash.put(MrtsConnector.NET_STRUCT_COLFAM, 
 				run_params.getExperimentName(), //"experiment1", 
 				run_params.getNetworkName(), //"structure1", 
 				net_struct);
@@ -133,7 +133,7 @@ public class Driver extends Configured implements Tool {
 	 * @param qerr mean squared error (quadratic loss)
 	 */
 	private void pushQErr(int epoch, double qerr) {
-		_hash.put(Connector.NET_QERR_COLFAM,
+		_hash.put(MrtsConnector.NET_QERR_COLFAM,
 				_run_params.getExperimentName(), //"experiment1", 
 				Integer.toString(epoch), 
 				qerr);
@@ -158,8 +158,13 @@ public class Driver extends Configured implements Tool {
 	public void writeShortRunParams(String filename) 
 		throws IOException {
 		_run_params.shortWriteToXML(filename);
+		
 		FileSystem fs = FileSystem.get(_conf);
-		fs.delete(new Path("/config/" + filename), true);
+		
+		if (fs.exists(new Path("/config/" + filename))) {
+			fs.delete(new Path("/config/" + filename), true);
+		}
+		
 		fs.copyFromLocalFile(new Path(filename), new Path("/config/" + filename));
 	}
 	

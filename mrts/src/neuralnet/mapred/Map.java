@@ -24,7 +24,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cassdb.Connector;
+import cassdb.MrtsConnector;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
@@ -34,7 +34,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	public static final String SPARAMS_FILENAME = "short_run.xml";
 	
 	// Private members
-	private Connector _conx;
+	private MrtsConnector _conx;
 	private IHashClient _hash;
 	private PatternList _pattern;
 	private NetworkStruct _net_struct;
@@ -48,7 +48,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	 */
 	public Map() {
 		super();
-		_conx = new Connector();
+		_conx = new MrtsConnector();
 		_hash = new HashClient(_conx.getKeyspace());
 		_nkey = new Text();
 	}
@@ -67,7 +67,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	 * @return network structure
 	 */
 	public NetworkStruct pullNetStruct(RunParams run_params) {
-		return (NetworkStruct)_hash.get(Connector.NET_STRUCT_COLFAM, 
+		return (NetworkStruct)_hash.get(MrtsConnector.NET_STRUCT_COLFAM, 
 				run_params.getExperimentName(), //"experiment1", 
 				run_params.getNetworkName()); //"structure1"
 	}
@@ -82,7 +82,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		logger.info("#Arcs " + network.getArcs().size());
 		
 		for (Arc arc : network.getArcs()) {
-			ArcValues wgd = (ArcValues)_hash.get(Connector.NET_WGE_COLFAM, 
+			ArcValues wgd = (ArcValues)_hash.get(MrtsConnector.NET_WGE_COLFAM, 
 					arc.getInputNode().getId(), 
 					arc.getOutputNode().getId());
 			
