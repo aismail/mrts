@@ -1,0 +1,12 @@
+
+Project: 	mrts-io - mrts input-output (importer/exporter)
+Author:		cbarca, cristi.barca@gmail.com
+License:	GPL
+
+Dependencies:
+	- cassdb
+	- OpenCSV library
+
+Description:
+	TODO
+
