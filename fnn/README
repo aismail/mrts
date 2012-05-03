@@ -1,0 +1,16 @@
+
+Project: 	fnn - feedforward neural network engine
+Author: 	cbarca, cristi.barca@gmail.com
+
+Dependencies:
+	- JDom Library
+	- OpenCSV library
+	- JMathPlot
+
+Description:
+	- Feedforward (MLP) neural network engine
+	- Training algorithms
+		- Backpropagation (online & batch)
+		- Resilient Backpropagation
+		- Real time error-plot
+
