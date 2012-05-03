@@ -15,6 +15,10 @@ import org.jdom2.output.XMLOutputter;
 
 import neuralnet.network.NetworkStruct;
 
+/**
+ * Run parameters file-reader class
+ * @author cbarca
+ */
 public class RunParams {
 	// Constants
 	public static final String SPARAMS_FILENAME = "short_run.xml";
