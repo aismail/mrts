@@ -1,12 +1,12 @@
 
 "Using a MapReduce Cluster to Find Anomalies in Sensor Data"
 
-Project: 	mrts - map reduce for time series
+Project: 	mrts - map-reduce for time series
 Author: 	cbarca, cristi.barca@gmail.com
 License:	GPL
 
 Dependencies:
-	- Hector API
+	- cassdb
 	- Sl4j library
 	- Hadoop Core API
 	- JDom Library
