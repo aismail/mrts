@@ -2,8 +2,6 @@ package neuralnet.mapred.util;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -299,37 +297,5 @@ public class RunParams {
 	
 	public String getOwnFilename() {
 		return _own_filename;
-	}
-	
-	public static void main(String[] args) {
-		RunParams rparams = new RunParams();
-		
-		try {
-			
-			BufferedReader fis;	
-			fis = new BufferedReader(new FileReader("runx.xml"));
-			rparams.readFromXML(fis);
-			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println(rparams.getExperimentName() + " " + 
-				rparams.getNetworkName() + " " + 
-				rparams.getInputPath() + " " + 
-				rparams.getOutputPath() + " " + 
-				rparams.getInputLocation() + " " + 
-				rparams.getOutputFormat());
-		
-		System.out.println(rparams.getNetStruct().getInputPop() + " " +
-				rparams.getNetStruct().getMiddlezPop().size() + " " +
-				rparams.getNetStruct().getOutputPop() + " " +
-				rparams.getNetStruct().getError() + " " + 
-				rparams.getNetStruct().getThreshold() + " " +
-				rparams.getNetStruct().getMaxEpochs());
-		
-		rparams.shortWriteToXML(SPARAMS_FILENAME);
-		rparams.writeToXML(PARAMS_FILENAME);
 	}
 }
