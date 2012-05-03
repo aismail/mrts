@@ -13,12 +13,12 @@ import me.prettyprint.hector.api.ddl.KeyspaceDefinition;
 import me.prettyprint.hector.api.factory.HFactory;
 
 /**
- * Cassandra Database Connector
+ * Cassandra MRTS Database Connector
  * 
  * @author cbarca
  * @email cristi.barca@gmail.com
  */
-public class Connector implements IConnector {
+public class MrtsConnector implements IConnector {
 	// Constants
 	public static final String MRTS_CLUSTERNAME = "mrtscluster";
 	public static final String MRTS_CLUSTERADDR = "emerald:9160";
@@ -34,18 +34,18 @@ public class Connector implements IConnector {
 	private Keyspace _keyspace;
 		
 	/**
-	 *  Implicit constructor, uses the default init settings.
+	 *  Default constructor, uses the default init settings
 	 */
-	public Connector() {
+	public MrtsConnector() {
 		this(MRTS_CLUSTERNAME, MRTS_CLUSTERADDR, MRTS_KEYSPACENAME);
 	}
 	
 	/**
-	 * Default constructor.
-	 * @param clusterName virtual cluster name, just for inside-project use;
-	 * @param clusterAddr the IPAddress:port of cluster;
+	 * Specialized constructor
+	 * @param clusterName virtual cluster name, just for inside-project use
+	 * @param clusterAddr the IPAddress:port of cluster
 	 */
-	public Connector(String clusterName, String clusterAddr, String keyspaceName) {
+	public MrtsConnector(String clusterName, String clusterAddr, String keyspaceName) {
 		_mrtsCluster = HFactory.getOrCreateCluster(clusterName, clusterAddr);
 		
 		KeyspaceDefinition ksDef = _mrtsCluster.describeKeyspace(keyspaceName);
@@ -61,7 +61,7 @@ public class Connector implements IConnector {
 	/**
 	 * Creates the database schema (if is not yet created)
 	 */
-	public void createSchema(String keyspaceName) {
+	private void createSchema(String keyspaceName) {
 		ColumnFamilyDefinition netStructCfDef = HFactory.createColumnFamilyDefinition(
 				keyspaceName, 
 				NET_STRUCT_COLFAM,
