@@ -1,10 +1,7 @@
 package driver;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 
-import fnn.util.RunParams;
 import mrtsio.mimport.Importer;
 import neuralnet.NeuralNetwork;
 
@@ -16,15 +13,9 @@ import neuralnet.NeuralNetwork;
 public class NeuralNetDriver {
 
 	public static void main(String[] args) 
-		throws IOException, ClassNotFoundException {
-		
-		RunParams run_params = new RunParams();
-		BufferedReader finput = new BufferedReader(new FileReader("runx.xml"));
-		run_params.readFromXML(finput);
-		
-		Importer.importTrainingDataToHDFS(run_params.getInputPath(), null, 323);
-		
-		NeuralNetwork nn = new NeuralNetwork(run_params);
-		nn.train(false);
+		throws IOException, ClassNotFoundException, InterruptedException {		
+		NeuralNetwork nn = new NeuralNetwork("iris_run.xml");
+		//Importer.importTrainingDataToHDFS(nn.getRunParams().getInputPath(), null, 30);
+		nn.train(true);
 	}
 }
