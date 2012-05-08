@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import neuralnet.dbconx.MrtsConnector;
 import neuralnet.mapred.dmodel.PairDataWritable;
@@ -41,6 +43,7 @@ import cassdb.internal.HashClient;
 public class Driver extends Configured implements Tool {
 	// Constants
 	public final static String NAME_NODE = "hdfs://localhost:9000";
+	// public final static String NAME_NODE = "hdfs://hadoop0.local:54310";
 	public static final String SPARAMS_FILENAME = "short_run.xml";
 		
 	// Private members
@@ -99,6 +102,15 @@ public class Driver extends Configured implements Tool {
 	}
 	
 	/**
+	 * Initialize qerror column family (remove errors from row)
+	 */
+	private void initQerror() {
+		_hash.remove(MrtsConnector.NET_QERR_COLFAM, 
+				_run_params.getExperimentName(), //"experiment1"
+				(Long)null);
+	}
+	
+	/**
 	 * Compute the mean squared error of the network (quadratic loss)
 	 * @param network neural-network (feedfwd)
 	 * @return mean squared error
@@ -130,13 +142,13 @@ public class Driver extends Configured implements Tool {
 	
 	/**
 	 * Push the mean squared error to the database
-	 * @param epoch train epoch
+	 * @param timestamp train timestamp
 	 * @param qerr mean squared error (quadratic loss)
 	 */
-	private void pushQErr(int epoch, double qerr) {
+	private void pushQErr(long timestamp, double qerr) {
 		_hash.put(MrtsConnector.NET_QERR_COLFAM,
 				_run_params.getExperimentName(), //"experiment1", 
-				Integer.toString(epoch), 
+				timestamp, 
 				qerr);
 	}
 	
@@ -199,8 +211,9 @@ public class Driver extends Configured implements Tool {
 		Network network = new Network(net_struct);
 		this.initNetWeights(network);
 		this.initOutputErrors(network);
+		this.initQerror();
 		
-		logger.info("Neural network created, weights & out_errors initialized");
+		logger.info("Neural network created, weights, out_errors & qerror initialized");
 		
 		logger.info("Begin training, running map-reduce jobs ...");
 		
@@ -243,7 +256,7 @@ public class Driver extends Configured implements Tool {
 			
 			qerr = this.computeQError(network);
 			
-			this.pushQErr(ep, qerr);
+			this.pushQErr(new Timestamp(new Date().getTime()).getTime(), qerr);
 			
 			// Stop timer
 			te2 = System.currentTimeMillis();
@@ -252,6 +265,9 @@ public class Driver extends Configured implements Tool {
 			logger.info("Episode " + ep + " finnished with " + 
 					qerr + " qerr in " + tep + " sec");
 		}
+		
+		// Push -1 to QErr row
+		this.pushQErr(new Timestamp(new Date().getTime()).getTime(), -1);
 		
 		// Stop timer
 		tt2 = System.currentTimeMillis();
