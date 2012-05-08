@@ -95,7 +95,7 @@ public class DataConnector implements IConnector {
 	 * @param colfamName train column family name
 	 */
 	private void dropColumnFamily(String keyspaceName, String colfamName) {
-		_mrtsCluster.dropColumnFamily(keyspaceName, colfamName);
+		_mrtsCluster.dropColumnFamily(keyspaceName, colfamName, true);
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class DataConnector implements IConnector {
 				colfamName,
 				ComparatorType.INTEGERTYPE);
 		
-		_mrtsCluster.addColumnFamily(trainDataCfDef);
+		_mrtsCluster.addColumnFamily(trainDataCfDef, true);
 	}
 	
 	/**
