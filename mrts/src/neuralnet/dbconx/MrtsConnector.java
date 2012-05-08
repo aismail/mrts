@@ -22,6 +22,7 @@ public class MrtsConnector implements IConnector {
 	// Constants
 	public static final String MRTS_CLUSTERNAME = "mrtscluster";
 	public static final String MRTS_CLUSTERADDR = "emerald:9160";
+	// public static final String MRTS_CLUSTERADDR = "89.45.248.151:9160";
 	public static final String MRTS_KEYSPACENAME = "mrtsdb";
 		
 	public static final String NET_STRUCT_COLFAM = "NetStruct";
@@ -80,7 +81,7 @@ public class MrtsConnector implements IConnector {
 		ColumnFamilyDefinition netQErrCfDef = HFactory.createColumnFamilyDefinition(
 				keyspaceName, 
 				NET_QERR_COLFAM,
-				ComparatorType.UTF8TYPE);
+				ComparatorType.LONGTYPE);
 		
 		KeyspaceDefinition ksDef = HFactory.createKeyspaceDefinition(
 				keyspaceName, 
