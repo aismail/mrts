@@ -139,7 +139,7 @@ public class Backprop {
     	if (verbose) {
     		System.out.println("Fwd time: " + tot_run);
 			System.out.println("Bwd time: " + tot_train);
-    		System.out.println("Netw error: " + _network.getQError());
+    		System.out.println("Netw qerror: " + _network.getQError());
     		System.out.println("Training complete in " + counter + " cycles");
     	}
     	
