@@ -51,7 +51,7 @@ public class Rprop extends AbstractAlgorithm {
      */
     @Override
     public int trainNetwork(PatternList patternz, double qerr, int max_cycles, 
-    		double threshold, boolean verbose, ICallbackPlotter iplotter) {
+    		double threshold, int verbose_rate, ICallbackPlotter iplotter) {
     	int limit = patternz.size();
     	
     	int counter = 0;
@@ -109,12 +109,11 @@ public class Rprop extends AbstractAlgorithm {
     		}
 	    
     		if (iplotter != null) {
-    			iplotter.addQErr(_network.getQError());
-    			iplotter.addMatch(success);
+    			iplotter.addXYValue("Err", counter + 1, _network.getQError());
     		}
     		
-    		if ((++counter % 100) == 0 && verbose) {		
-    			System.out.println(">> 100 episodes finished in " + 
+    		if (verbose_rate > 0 && (++counter % verbose_rate) == 0) {		
+    			System.out.println(">> " + verbose_rate + " epoch(s) finished in " + 
     					(tot_fwd + tot_bwd) / (double)1000 +  " sec");	
     			System.out.println("Fwd time: " + tot_fwd / (double)1000 +  " sec");
     			System.out.println("Bwd time: " + tot_bwd / (double)1000 +  " sec");
@@ -135,7 +134,7 @@ public class Rprop extends AbstractAlgorithm {
     	
     	tot_train = (train_end - train_start);
     	
-    	if (verbose) {
+    	if (verbose_rate > 0) {
 			System.out.println("Total train time: " + tot_train / (double)1000 + " sec");
     		System.out.println("Netw qerror: " + _network.getQError());
     		System.out.println("Training complete in " + counter + " epochs");

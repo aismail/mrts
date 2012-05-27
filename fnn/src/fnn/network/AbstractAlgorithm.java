@@ -30,7 +30,7 @@ public abstract class AbstractAlgorithm {
      * @return quantity of trained patterns
      */
     public abstract int trainNetwork(PatternList patternz, double qerr, int max_cycles, 
-    		double threshold, boolean verbose, ICallbackPlotter iplotter);
+    		double threshold, int verbose_rate, ICallbackPlotter iplotter);
     
     /**
      * Persist this network to a file
