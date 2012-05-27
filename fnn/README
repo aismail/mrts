@@ -5,7 +5,7 @@ Author: 	cbarca, cristi.barca@gmail.com
 Dependencies:
 	- JDom Library
 	- OpenCSV library
-	- JMathPlot
+	- JFreeChart
 
 Description:
 	- Feedforward (MLP) neural network engine
