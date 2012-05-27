@@ -8,5 +8,5 @@ import me.prettyprint.hector.api.Keyspace;
  * @author cbarca
  */
 public interface IConnector {
-	Keyspace getKeyspace();
+	public Keyspace getKeyspace();
 }
