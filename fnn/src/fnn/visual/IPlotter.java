@@ -1,8 +1,9 @@
 package fnn.visual;
 
-import java.util.List;
+import org.jfree.chart.ChartPanel;
 
 public interface IPlotter {
-	public void setQerrPlot(String pname, List<Double> qerr);
-	public void setMatchPlot(String pname, List<Integer> match);
+	public void addXYValue(String series, double x, double y);
+	public void addSeries(String name);
+	public ChartPanel getChartPanel();
 }
