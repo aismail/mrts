@@ -227,7 +227,8 @@ public class Network implements Serializable {
 	
     	for (int ii = _outputz.length - 1; ii >= 0; ii--) {
     		_outputz[ii].trainNode();
-    		qerror += Math.pow(_outputz[ii].getOutputError(), 2);
+    		qerror += _outputz[ii].getOutputError() * 
+    			_outputz[ii].getOutputError();
     	}
 	
     	for (int ii = _middle_layers.size() - 1; ii >= 0; ii--) {
