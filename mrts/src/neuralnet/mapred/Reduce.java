@@ -123,21 +123,29 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	@Override
 	public void reduce(Text key, Iterable<PairDataWritable> values, Context context)
 			throws IOException, InterruptedException {
+		long tstart, tend;
 		
+		tstart = System.currentTimeMillis();
 		// Initialize reduce function
 		this.initReduce(key);
+		tend = System.currentTimeMillis();
 		
-		logger.info("Reduce function initialized for Node " + key.toString());
+		logger.info("Reduce function initialized for Node " + key.toString() +
+				" in " + (double)(tend - tstart) / 1000 + " sec");
 		
 		int cont = 0;
+		tstart = System.currentTimeMillis();
 		// Aggregate (sum-up) data from mapping 
 		for (PairDataWritable val : values) {
 			this.sumUpData(val.getDestination(), val.getValue());
 			cont++;
 		}
+		tend = System.currentTimeMillis();
 		
-		logger.info("Gradients/errors aggregated, list size " + cont);
+		logger.info("Gradients/errors aggregated, list size " + cont + 
+				" in " + (double)(tend - tstart) / 1000 + " sec");
 	
+		tstart = System.currentTimeMillis();
 		// Update data
 		for (Entry<Integer, Double> arcg : _sumup.entrySet()) {
 			if (arcg.getKey() != 0) {
@@ -149,8 +157,10 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 				this.updateOutputError(_node, arcg.getValue());
 			}
 		}
+		tend = System.currentTimeMillis();
 		
 		logger.info("Map.entrySet size " + _sumup.entrySet().size());
-		logger.info("Data - weight & output error - updated");
+		logger.info("Data - weight & output error - updated in " + 
+				(double)(tend - tstart) / 1000 + " sec");
 	}
 }

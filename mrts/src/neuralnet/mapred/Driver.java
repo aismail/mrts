@@ -42,8 +42,8 @@ import cassdb.internal.HashClient;
 
 public class Driver extends Configured implements Tool {
 	// Constants
-	public final static String NAME_NODE = "hdfs://localhost:9000";
-	// public final static String NAME_NODE = "hdfs://hadoop0.local:54310";
+	// public final static String NAME_NODE = "hdfs://localhost:9000";
+	public final static String NAME_NODE = "hdfs://hadoop0.local:54310";
 	public static final String SPARAMS_FILENAME = "short_run.xml";
 		
 	// Private members
@@ -95,7 +95,7 @@ public class Driver extends Configured implements Tool {
 	private void initOutputErrors(Network network) {
 		for (OutputNode anode : network.getOutputNodes()) {			
 			_hash.put(MrtsConnector.NET_WGE_COLFAM,
-					0, // output_errors_row
+					0, // output errors row
 					anode.getId(), 
 					0.0);			
 		}
@@ -106,7 +106,7 @@ public class Driver extends Configured implements Tool {
 	 */
 	private void initQerror() {
 		_hash.remove(MrtsConnector.NET_QERR_COLFAM, 
-				_run_params.getExperimentName(), //"experiment1"
+				_run_params.getExperimentName(),
 				(Long)null);
 	}
 	
@@ -120,7 +120,7 @@ public class Driver extends Configured implements Tool {
 		
 		for (OutputNode anode : network.getOutputNodes()) {
 			Double oerr = (Double)_hash.get(MrtsConnector.NET_WGE_COLFAM,
-					0, // output_errors_row
+					0, // output errors row
 					anode.getId());
 			logger.info("Output error: node = " + anode.getId() + " oerr = " + oerr.doubleValue());
 			qerr += oerr.doubleValue();			
@@ -135,8 +135,8 @@ public class Driver extends Configured implements Tool {
 	 */
 	private void pushNetStruct(NetworkStruct net_struct, RunParams run_params) {
 		_hash.put(MrtsConnector.NET_STRUCT_COLFAM, 
-				run_params.getExperimentName(), //"experiment1", 
-				run_params.getNetworkName(), //"structure1", 
+				run_params.getExperimentName(), 
+				run_params.getNetworkName(),  
 				net_struct);
 	}
 	
@@ -147,7 +147,7 @@ public class Driver extends Configured implements Tool {
 	 */
 	private void pushQErr(long timestamp, double qerr) {
 		_hash.put(MrtsConnector.NET_QERR_COLFAM,
-				_run_params.getExperimentName(), //"experiment1", 
+				_run_params.getExperimentName(), 
 				timestamp, 
 				qerr);
 	}
@@ -262,7 +262,7 @@ public class Driver extends Configured implements Tool {
 			te2 = System.currentTimeMillis();
 			
 			tep = (te2 - te1) / 1000;
-			logger.info("Episode " + ep + " finnished with " + 
+			logger.info("Epoch " + ep + " finnished with " + 
 					qerr + " qerr in " + tep + " sec");
 		}
 		

@@ -119,7 +119,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	 * @return number of successful train iterations
 	 */
 	public int runEpoch(Network network) {
-		// run_net + train_net
+		// run network + train network
 		int limit = _pattern.size();
 		int success = 0;
 		long run_start, run_end, tot_run = 0, 
@@ -207,45 +207,61 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	@Override
 	public void map(LongWritable key, Text value, Context context) 
 		throws IOException, InterruptedException {
+		long tstart, tend;
 		
+		tstart = System.currentTimeMillis();
 		// Initialize map function
 		this.initMap();
+		tend = System.currentTimeMillis();
+				
+		logger.info("Map function initialized in " + 
+				(double)(tend - tstart) / 1000 + " sec");
 		
-		logger.info("Map function initialized");
-		
+		tstart = System.currentTimeMillis();
 		// Parse each line from the chunk
 		String[] vectors = value.toString().split(SPLIT_TOKEN);
 		for (String vector : vectors) {
 			this.addToTrainSet(vector);
 		}
+		tend = System.currentTimeMillis();
 		
-		logger.info("PatternList for network-train created, " +
-				"size is " + _pattern.size());
+		logger.info("PatternList for network-train created in " + 
+				(double)(tend - tstart) / 1000 + " sec" +
+				", size is " + _pattern.size());
 		
+		tstart = System.currentTimeMillis();
 		// Run one epoch with the train data
 		int success = this.runEpoch(_network);
+		tend = System.currentTimeMillis();
 		
 		logger.info("Epoch finnised with success rate " + success 
-				+ " out of " + _pattern.size());
+				+ " out of " + _pattern.size() + " in " +
+				(double)(tend - tstart) / 1000 + " sec");
 		
 		// Pass the values to reducers
 		
+		tstart = System.currentTimeMillis();
 		// PairDataWritable: N1 <N2 G>
 		for (Arc arc : _network.getArcs()) {
 			_nkey.set(new Text(arc.getInputNode().getId() + ""));
 			PairDataWritable pdw = new PairDataWritable(arc.getOutputNode().getId(), arc.getGradient());
 			context.write(_nkey, pdw);
 		}
+		tend = System.currentTimeMillis();
 		
-		logger.info("Gradients sent");
+		logger.info("Gradients sent in " +
+				(double)(tend - tstart) / 1000 + " sec");
 		
+		tstart = System.currentTimeMillis();
 		// PairDataWritable: No <0 Err> 
 		for (OutputNode node : _network.getOutputNodes()) {
 			_nkey.set(new Text(node.getId() + ""));
 			PairDataWritable pdw = new PairDataWritable(node.getAggOuputError());
 			context.write(_nkey, pdw);
 		}
+		tend = System.currentTimeMillis();
 		
-		logger.info("OutputErrors sent");
+		logger.info("OutputErrors sent in " + 
+				(double)(tend - tstart) / 1000 + " sec");
 	}
 }
