@@ -27,10 +27,10 @@ public class RunParams {
 	public static final String PARAMS_FILENAME = "mrts_run.xml";
 	
 	// Private members
-	private String _exper_name, _input_path, 
-		_output_path, _network_name;
-	private OutputFormat _output_format;
-	private InputLocation _input_location;
+	private String _exper_name = "name", _input_path = "./inpath", 
+		_output_path = "./outpath", _network_name = "name";
+	private OutputFormat _output_format = OutputFormat.Serial;
+	private InputLocation _input_location = InputLocation.LocalDir;
 	private NetworkStruct _net_struct;
 	private SAXBuilder _builder;
 	private String _own_filename;
@@ -40,7 +40,7 @@ public class RunParams {
 	 * @author cbarca
 	 */
 	public enum OutputFormat {
-		CSV, MATRIX;
+		Serial, CSV, Matrix;
 	}
 
 	/**
@@ -68,6 +68,9 @@ public class RunParams {
 			Document document = (Document) _builder.build(finput);
 			// Setup root node
 			Element rootNode = document.getRootElement();
+			
+			// Reset net_struct
+			_net_struct = new NetworkStruct();
 			
 			// Experiment node
 			Element experiment = rootNode.getChild("experiment");
