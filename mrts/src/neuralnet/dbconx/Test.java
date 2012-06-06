@@ -1,5 +1,11 @@
 package neuralnet.dbconx;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 import neuralnet.mapred.dmodel.ArcValues;
 import neuralnet.network.Arc;
 import neuralnet.network.Network;
@@ -41,9 +47,23 @@ public class Test {
 			double oerr = (Double)hash.get(MrtsConnector.NET_WGE_COLFAM,
 					0, // output_errors_row
 					anode.getId());
+			
 			qerr += oerr;			
 		}
 		
+		try {
+			ObjectOutputStream oos;
+			oos = new ObjectOutputStream(new FileOutputStream(new File("arrhy.ser")));
+			oos.writeObject(network);
+	    	oos.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
 		// Print mean squared error (a.k.a quadratic loss)
 		System.out.println(qerr / (double)(network.getOutputNodes().length));
 	}
