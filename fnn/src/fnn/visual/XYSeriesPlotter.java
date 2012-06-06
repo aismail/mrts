@@ -11,6 +11,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 public class XYSeriesPlotter implements IPlotter {
+	public static final Dimension DEFAULT_DIMENSION = new Dimension(600, 600);
 	private double[] _buff_xvals, _buff_yvals;
 	private String _title;
 	private int _buff_size = 0, _max_buff_size = 0;
@@ -20,6 +21,10 @@ public class XYSeriesPlotter implements IPlotter {
 	private HashMap<String, XYSeries> _hseries;
 	
 	public XYSeriesPlotter(String title, int max_buff_size) {
+		this(title, max_buff_size, DEFAULT_DIMENSION);
+	}
+	
+	public XYSeriesPlotter(String title, int max_buff_size, Dimension dimension) {
 		_max_buff_size = max_buff_size;
 		_buff_xvals = new double[_max_buff_size];
 		_buff_yvals = new double[_max_buff_size];
@@ -34,7 +39,7 @@ public class XYSeriesPlotter implements IPlotter {
 				PlotOrientation.VERTICAL, 
 				true, true, false);
 		_chart_panel = new ChartPanel(_chart);
-		_chart_panel.setPreferredSize(new Dimension(800, 600));
+		_chart_panel.setPreferredSize(dimension);
 	}
 	
 	@Override
