@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Date;
 
 
 import fnn.dataio.Pattern;
@@ -109,7 +110,8 @@ public class Rprop extends AbstractAlgorithm {
     		}
 	    
     		if (iplotter != null) {
-    			iplotter.addXYValue("Err", counter + 1, _network.getQError());
+    			iplotter.addXYValue("error", counter + 1, _network.getQError(),
+    					new Date().getTime());
     		}
     		
     		if (verbose_rate > 0 && (++counter % verbose_rate) == 0) {		
