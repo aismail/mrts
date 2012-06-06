@@ -1,5 +1,5 @@
 package fnn.visual;
 
 public interface ICallbackPlotter {
-	public void addXYValue(String series, double xval, double yval);
+	public void addXYValue(String series, double xval, double yval, long timestamp);
 }
