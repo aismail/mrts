@@ -5,9 +5,10 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import neuralnet.dbconx.MrtsConnector;
-import neuralnet.mapred.dmodel.PairDataWritable;
 import neuralnet.mapred.dmodel.ArcValues;
+import neuralnet.mapred.dmodel.PairDataWritable;
 import neuralnet.mapred.util.RunParams;
+import neuralnet.network.AbstractNode;
 import neuralnet.network.Arc;
 import neuralnet.network.Mathz;
 import neuralnet.network.Network;
@@ -69,8 +70,8 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	 */
 	public NetworkStruct pullNetStruct(RunParams run_params) {
 		return (NetworkStruct)_hash.get(MrtsConnector.NET_STRUCT_COLFAM, 
-				run_params.getExperimentName(), //"experiment1", 
-				run_params.getNetworkName()); //"structure1"
+				run_params.getExperimentName(),  
+				run_params.getNetworkName()); 
 	}
 	
 	/**
@@ -78,17 +79,39 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	 * @param network neural-network
 	 */
 	private void initNetWeights(Network network) {
+		java.util.Map<Integer, Object> map;
+		
 		logger.info("Init weights");
 		logger.info("Hash UP: " + ((_hash == null) ? false : true));
 		logger.info("#Arcs " + network.getArcs().size());
 		
-		for (Arc arc : network.getArcs()) {
-			ArcValues wgd = (ArcValues)_hash.get(MrtsConnector.NET_WGE_COLFAM, 
-					arc.getInputNode().getId(), 
-					arc.getOutputNode().getId());
+		for (AbstractNode node : network.getInputNodes()) {
+			map = _hash.getRow(MrtsConnector.NET_WGE_COLFAM, 
+					node.getId(), 
+					node.getOutputArcs().size());
 			
-			arc.setWeight(wgd.getWeight());
+			for (Arc arc : node.getOutputArcs()) {
+				ArcValues wgd = (ArcValues)map.get(arc.getOutputNode().getId());
+				arc.setWeight(wgd.getWeight());	
+			}
 		}
+		
+		logger.info("Input layer's weights initialized");
+		
+		for (AbstractNode[] nodes : network.getMiddleLayers()) {
+			for (AbstractNode node : nodes) {
+				map = _hash.getRow(MrtsConnector.NET_WGE_COLFAM, 
+						node.getId(), 
+						node.getOutputArcs().size());
+				
+				for (Arc arc : node.getOutputArcs()) {
+					ArcValues wgd = (ArcValues)map.get(arc.getOutputNode().getId());
+					arc.setWeight(wgd.getWeight());	
+				}
+			}
+		}
+		
+		logger.info("Middle layers' weights initialized");
 	}
 	
 	/**
