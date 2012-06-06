@@ -53,24 +53,24 @@ public class OutputNode extends AbstractNode {
     }
     
     /**
-     * Aggregate the node output error for all 
-     * patterns ran through the train epoch
-     * @param arg
+     * Aggregate the node's squared output error 
+     * for all patterns ran through the train epoch
+     * @param arg output error
      */
     private void aggOutputError(double arg) {
     	agg_output_error += (arg * arg);
     }
 
     /**
-     * Reset aggregated output square error
+     * Reset aggregated squared output error
      */
     public void resetAggOutputError() {
     	agg_output_error = 0;
     }
     
     /**
-     * Return the sum (aggregation) of all output errors 
-     * @return aggregated output error value
+     * Return the sum of all squared output errors 
+     * @return aggregated squared output errors 
      */
     public double getAggOuputError() {
     	return agg_output_error;
