@@ -2,6 +2,7 @@ package neuralnet.network;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Abstract parent for nodes
@@ -58,6 +59,14 @@ public abstract class AbstractNode extends AbstractArcNode {
     }
     
     /**
+     * Get output node's arcs
+     * @return list of output arcs
+     */
+    public List<Arc> getOutputArcs() {
+    	return output_arcs;
+    }
+    
+    /**
      * What am I connected to?
      */
     public String dumpConnections() {
@@ -100,12 +109,12 @@ public abstract class AbstractNode extends AbstractArcNode {
     /**
      * Input arcs
      */
-    ArrayList<Arc> input_arcs = new ArrayList<Arc>();
+    List<Arc> input_arcs = new ArrayList<Arc>();
     
     /**
      * Output arcs
      */
-    ArrayList<Arc> output_arcs = new ArrayList<Arc>();	
+    List<Arc> output_arcs = new ArrayList<Arc>();	
     
     /**
 	 * Eclipse generated 
