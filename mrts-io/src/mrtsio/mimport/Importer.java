@@ -95,58 +95,74 @@ public class Importer {
 	 * @throws IOException
 	 */
 	public static void importTrainingDataToHDFS(String dir_path, 
-			String hdfs_path, int row_size) throws IOException {
-		int count = 0;
+			String hdfs_path, int chunk_size, int file_size) throws IOException {
+		int cksize = 0, flsize = 0, nfiles = 0;
 		String train_vector;
 		String[] values;
-    	
+		BufferedWriter writer = null;
 		File dir = new File(dir_path);
+		
 		File[] files = dir.listFiles();
-				
+		train_vector = new String();
+		
 		// Each file is read and parsed
 		for (File file : files) {
-			
 			if (!file.getName().contains(".csv")) {
 				continue;
 			}
 			
-	    	train_vector = new String();
-	    	
-	    	CSVReader reader = new CSVReader(new FileReader(file));
-	    	BufferedWriter writer = new BufferedWriter(new FileWriter("hdfs_" + file.getName()));
-	    	
+			System.out.println("File: " + file.getName());
+				
+	    	CSVReader reader = new CSVReader(new FileReader(file));	    	
 	    	reader.readNext();
 	    	
 	    	while ((values = reader.readNext()) != null) {
+	    		if (flsize == 0 && cksize == 0) {
+	    			writer = new BufferedWriter(new FileWriter("hdfs_" + nfiles));
+	    			nfiles++;
+	    		}
+	    		
 	    		train_vector = "";
+	    		
 	    		for (int i = 0; i < values.length - 1; i++) {
 	    			train_vector += values[i] + ",";
 	    		}
 	    		train_vector += values[values.length - 1];
-	    		count++;
+	    		cksize++;
 	    			    		
-	    		if (count == row_size) {
-	    			count = 0;
-	    			writer.write("\n");
-	    			train_vector = "";
-	    			continue;
+	    		if (cksize == chunk_size) {
+	    			flsize++;
+	    			cksize = 0;
+	    			train_vector += "\n";
+	    		}
+	    		else {
+	    			train_vector += SPLIT_TOKEN;
 	    		}
 	    		
-	    		train_vector += SPLIT_TOKEN;
-	    		writer.write(train_vector);
+	    		if (writer != null) {
+	    			writer.write(train_vector);
+	    			
+	    			if (flsize == file_size) {
+	    				flsize = 0;
+	    				writer.close();
+		    		}
+	    		}
 	       	}
-	    	
-	    	if (count < row_size) {
-	    		count = 0;
-    			writer.write(train_vector);
-	    	}
-	    	
+	    		    	
 	    	reader.close();
-	    	writer.close();
 	    	
 	    	/* import to hdfs (copy from local to hdfs)
 	    	 * TODO
 	    	 */
 		}
+		
+		if (cksize < chunk_size) {
+    		cksize = 0;
+    		
+    		if (writer != null) {
+    			writer.write(train_vector);
+    			writer.close();
+    		}
+    	}
 	}
 }
