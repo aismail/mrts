@@ -2,6 +2,7 @@ package fnn.network;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Abstract parent for nodes
@@ -57,6 +58,14 @@ public abstract class AbstractNode extends AbstractArcNode {
     }
     
     /**
+     * Get output node's arcs
+     * @return list of output arcs
+     */
+    public List<AbstractArc> getOutputArcs() {
+    	return output_arcs;
+    }
+    
+    /**
      * What am I connected to?
      */
     public String dumpConnections() {
@@ -99,12 +108,12 @@ public abstract class AbstractNode extends AbstractArcNode {
     /**
      * Input arcs
      */
-    ArrayList<AbstractArc> input_arcs = new ArrayList<AbstractArc>();
+    List<AbstractArc> input_arcs = new ArrayList<AbstractArc>();
     
     /**
      * Output arcs
      */
-    ArrayList<AbstractArc> output_arcs = new ArrayList<AbstractArc>();	
+    List<AbstractArc> output_arcs = new ArrayList<AbstractArc>();	
     
     /**
 	 * Eclipse generated 
