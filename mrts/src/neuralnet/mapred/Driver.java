@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Timestamp;
 import java.util.Date;
 
 import neuralnet.dbconx.MrtsConnector;
@@ -42,14 +41,13 @@ import cassdb.internal.HashClient;
 
 public class Driver extends Configured implements Tool {
 	// Constants
-	// public final static String NAME_NODE = "hdfs://localhost:9000";
 	public final static String NAME_NODE = "hdfs://hadoop0.local:54310";
 	public static final String SPARAMS_FILENAME = "short_run.xml";
 		
 	// Private members
 	private IConnector _conx;
 	private IHashClient _hash;
-	private static Logger logger = LoggerFactory.getLogger(Driver.class);
+	private static Logger _logger = LoggerFactory.getLogger(Driver.class);
 	private Configuration _conf;
 	private RunParams _run_params;
 	
@@ -122,7 +120,7 @@ public class Driver extends Configured implements Tool {
 			Double oerr = (Double)_hash.get(MrtsConnector.NET_WGE_COLFAM,
 					0, // output errors row
 					anode.getId());
-			logger.info("Output error: node = " + anode.getId() + " oerr = " + oerr.doubleValue());
+			_logger.info("Output error: node = " + anode.getId() + " oerr = " + oerr.doubleValue());
 			qerr += oerr.doubleValue();			
 		}
 		
@@ -197,7 +195,7 @@ public class Driver extends Configured implements Tool {
 	 * @throws InterruptedException
 	 * @throws ClassNotFoundException
 	 */
-	private void runHDFS() 
+	private void runHDFS(int reducersNum) 
 		throws IOException, InterruptedException, ClassNotFoundException {
 		double qerr = Double.MAX_VALUE;
 		int ep = 0;
@@ -206,16 +204,16 @@ public class Driver extends Configured implements Tool {
 		NetworkStruct net_struct = _run_params.getNetStruct();
 		this.pushNetStruct(net_struct, _run_params);
 		
-		logger.info("Network structure created & pushed to cassandra");
+		_logger.info("Network structure created & pushed to cassandra");
 		
 		Network network = new Network(net_struct);
 		this.initNetWeights(network);
 		this.initOutputErrors(network);
 		this.initQerror();
 		
-		logger.info("Neural network created, weights, out_errors & qerror initialized");
+		_logger.info("Neural network created, weights, out_errors & qerror initialized");
 		
-		logger.info("Begin training, running map-reduce jobs ...");
+		_logger.info("Begin training, running map-reduce jobs ...");
 		
 		// Start timer
 		tt1 = System.currentTimeMillis();
@@ -232,6 +230,8 @@ public class Driver extends Configured implements Tool {
 			
 			Job job = new Job(_conf, "mrts");
 			
+			job.setNumReduceTasks(reducersNum);
+			
 			job.setMapOutputKeyClass(Text.class);
 			job.setMapOutputValueClass(PairDataWritable.class);
 		
@@ -247,7 +247,7 @@ public class Driver extends Configured implements Tool {
 		
 			FileInputFormat.setInputPaths(job, new Path(_run_params.getInputPath()));
 		
-			logger.info("Job sent to map-reduce cluster");
+			_logger.info("Job sent to map-reduce cluster");
 		
 			// Start timer
 			te1 = System.currentTimeMillis(); 
@@ -256,24 +256,24 @@ public class Driver extends Configured implements Tool {
 			
 			qerr = this.computeQError(network);
 			
-			this.pushQErr(new Timestamp(new Date().getTime()).getTime(), qerr);
+			this.pushQErr(new Date().getTime(), qerr);
 			
 			// Stop timer
 			te2 = System.currentTimeMillis();
 			
 			tep = (te2 - te1) / 1000;
-			logger.info("Epoch " + ep + " finnished with " + 
+			_logger.info("Epoch " + ep + " finnished with " + 
 					qerr + " qerr in " + tep + " sec");
 		}
 		
 		// Push -1 to QErr row
-		this.pushQErr(new Timestamp(new Date().getTime()).getTime(), -1);
+		this.pushQErr(new Date().getTime(), -1);
 		
 		// Stop timer
 		tt2 = System.currentTimeMillis();
 		
 		ttotal = (tt2 - tt1) / 1000;
-		logger.info("Total train time: " + ttotal + " sec");
+		_logger.info("Total train time: " + ttotal + " sec");
 	}
 	
 	/**
@@ -289,10 +289,10 @@ public class Driver extends Configured implements Tool {
 		this.writeShortRunParams(SPARAMS_FILENAME);
 		this.shareShortRunParams(SPARAMS_FILENAME);
 		
-		logger.info("Run parameters file - read, short write & short share");
+		_logger.info("Run parameters file - read, short write & short share");
 		
 		if (_run_params.getInputLocation().equals(InputLocation.HDFS)) {
-			this.runHDFS();
+			this.runHDFS(Integer.parseInt(arg0[2]));
 		}
 		
 		return 0;
