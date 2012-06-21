@@ -156,7 +156,7 @@ public class Importer {
 	    	 */
 		}
 		
-		if (cksize < chunk_size) {
+		if (flsize < file_size && flsize > 0) {
     		cksize = 0;
     		
     		if (writer != null) {
