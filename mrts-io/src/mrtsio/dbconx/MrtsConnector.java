@@ -53,7 +53,7 @@ public class MrtsConnector implements IConnector {
 
 		@Override
 		public HConsistencyLevel get(OperationType op, String cfName) {
-			return HConsistencyLevel.QUORUM;
+			return this.get(op);
 		}
 	}
 	
@@ -101,7 +101,7 @@ public class MrtsConnector implements IConnector {
 		ColumnFamilyDefinition netSerCfDef = HFactory.createColumnFamilyDefinition(
 				keyspaceName, 
 				NET_SER_COLFAM,
-				ComparatorType.UTF8TYPE);	
+				ComparatorType.INTEGERTYPE);	
 		
 		ColumnFamilyDefinition netQErrCfDef = HFactory.createColumnFamilyDefinition(
 				keyspaceName, 
@@ -116,8 +116,8 @@ public class MrtsConnector implements IConnector {
 		
 		_mrtsCluster.addKeyspace(ksDef, true);
 		
-		_keyspace = HFactory.createKeyspace(keyspaceName, _mrtsCluster);
-		_keyspace.setConsistencyLevelPolicy(new MrtsConsistencyLevel());
+		_keyspace = HFactory.createKeyspace(keyspaceName, _mrtsCluster, 
+				new MrtsConsistencyLevel());
 	}
 	
 	/**
