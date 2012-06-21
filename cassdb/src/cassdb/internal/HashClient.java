@@ -34,9 +34,20 @@ public class HashClient implements IHashClient {
 	// Private members
 	private Keyspace _keyspace;
 	private Mutator<Integer> _batchMutator;
-
-	public HashClient(Keyspace keyspace) {
+	private ObjectSerializer _objSer;
+	
+	public HashClient(Keyspace keyspace, ClassLoader cl) {
 		_keyspace = keyspace;
+		if (cl == null) {
+			_objSer = ObjectSerializer.get();
+		}
+		else {
+			_objSer = new ObjectSerializer(cl);
+		}
+	}
+	
+	public HashClient(Keyspace keyspace) {
+		this(keyspace, null);
 	}
 
 	/**
@@ -50,7 +61,7 @@ public class HashClient implements IHashClient {
 		Map<Integer, Object> map = new HashMap<Integer, Object>();
 
 		SliceQuery<Integer, Integer, Object> sliceQuery = HFactory.createSliceQuery(
-				_keyspace, IntegerSerializer.get(), IntegerSerializer.get(), ObjectSerializer.get());
+				_keyspace, IntegerSerializer.get(), IntegerSerializer.get(), _objSer);
 
 		sliceQuery.setColumnFamily(colfamName);
 		sliceQuery.setKey(keyL);
@@ -81,7 +92,7 @@ public class HashClient implements IHashClient {
 		Map<Integer, Object> map = new HashMap<Integer, Object>();
 
 		SliceQuery<Integer, Integer, Object> sliceQuery = HFactory.createSliceQuery(
-				_keyspace, IntegerSerializer.get(), IntegerSerializer.get(), ObjectSerializer.get());
+				_keyspace, IntegerSerializer.get(), IntegerSerializer.get(), _objSer);
 		sliceQuery.setColumnFamily(colfamName);
 		sliceQuery.setKey(keyL);
 		
@@ -108,7 +119,7 @@ public class HashClient implements IHashClient {
 		boolean lastIteration = false;
 		
 		RangeSlicesQuery<Integer, Integer, Object> rangeSliceQuery = HFactory.createRangeSlicesQuery(
-				_keyspace, IntegerSerializer.get(), IntegerSerializer.get(), ObjectSerializer.get());
+				_keyspace, IntegerSerializer.get(), IntegerSerializer.get(), _objSer);
 		rangeSliceQuery.setColumnFamily(colfamName);
 		// from 0:to_colfam_end with rowPageSize chunk limit
 		rangeSliceQuery.setKeys(null, null);
@@ -157,7 +168,7 @@ public class HashClient implements IHashClient {
 	@Override
 	public Object get(String colfamName, Integer keyL, Integer keyC) {
 		ColumnQuery<Integer, Integer, Object> columnQuery = HFactory.createColumnQuery(
-				_keyspace, IntegerSerializer.get(), IntegerSerializer.get(), ObjectSerializer.get());
+				_keyspace, IntegerSerializer.get(), IntegerSerializer.get(), _objSer);
 
 		columnQuery.setColumnFamily(colfamName);
 		columnQuery.setKey(keyL);
@@ -178,7 +189,7 @@ public class HashClient implements IHashClient {
 	@Override
 	public Object get(String colfamName, String keyL, Long keyC) {
 		ColumnQuery<String, Long, Object> columnQuery = HFactory.createColumnQuery(
-				_keyspace, StringSerializer.get(), LongSerializer.get(), ObjectSerializer.get());
+				_keyspace, StringSerializer.get(), LongSerializer.get(), _objSer);
 
 		columnQuery.setColumnFamily(colfamName);
 		columnQuery.setKey(keyL);
@@ -199,7 +210,7 @@ public class HashClient implements IHashClient {
 	@Override
 	public Object get(String colfamName, String keyL, String keyC) {
 		ColumnQuery<String, String, Object> columnQuery = HFactory.createColumnQuery(
-				_keyspace, StringSerializer.get(), StringSerializer.get(), ObjectSerializer.get());
+				_keyspace, StringSerializer.get(), StringSerializer.get(), _objSer);
 
 		columnQuery.setColumnFamily(colfamName);
 		columnQuery.setKey(keyL);
@@ -225,7 +236,7 @@ public class HashClient implements IHashClient {
 
 		SliceQuery<String, Long, Object> sliceQuery = 
 			HFactory.createSliceQuery(_keyspace, StringSerializer.get(), 
-					LongSerializer.get(), ObjectSerializer.get());
+					LongSerializer.get(), _objSer);
 
 		sliceQuery.setColumnFamily(colfamName);
 		sliceQuery.setKey(keyL);
@@ -256,7 +267,7 @@ public class HashClient implements IHashClient {
 		Mutator<Integer> mutator = HFactory.createMutator(_keyspace, IntegerSerializer.get());
 
 		mutator.insert(keyL, colfamName, 
-				HFactory.createColumn(keyC, value, IntegerSerializer.get(), ObjectSerializer.get()));
+				HFactory.createColumn(keyC, value, IntegerSerializer.get(), _objSer));
 	}
 
 	/**
@@ -270,7 +281,7 @@ public class HashClient implements IHashClient {
 		Mutator<String> mutator = HFactory.createMutator(_keyspace, StringSerializer.get());
 
 		mutator.insert(keyL, colfamName, 
-				HFactory.createColumn(keyC, value, LongSerializer.get(), ObjectSerializer.get()));
+				HFactory.createColumn(keyC, value, LongSerializer.get(), _objSer));
 	}
 
 	/**
@@ -284,7 +295,7 @@ public class HashClient implements IHashClient {
 		Mutator<String> mutator = HFactory.createMutator(_keyspace, StringSerializer.get());
 
 		mutator.insert(keyL, colfamName, 
-				HFactory.createColumn(keyC, value, StringSerializer.get(), ObjectSerializer.get()));
+				HFactory.createColumn(keyC, value, StringSerializer.get(), _objSer));
 	}
 
 	/**
@@ -304,7 +315,7 @@ public class HashClient implements IHashClient {
 	@Override
 	public void batchPut(String colfamName, Integer keyL, Integer keyC, Object value) {
 		_batchMutator.addInsertion(keyL, colfamName, 
-				HFactory.createColumn(keyC, value, IntegerSerializer.get(), ObjectSerializer.get()));
+				HFactory.createColumn(keyC, value, IntegerSerializer.get(), _objSer));
 	}
 
 	/**
