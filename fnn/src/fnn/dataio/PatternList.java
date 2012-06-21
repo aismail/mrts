@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Pattern List
@@ -88,13 +90,21 @@ public class PatternList {
 	@SuppressWarnings("unchecked")
 	public void reader(File file) throws IOException, FileNotFoundException, ClassNotFoundException {
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-		_list = (ArrayList<Pattern>) ois.readObject();
+		_list = (List<Pattern>) ois.readObject();
 		ois.close();
+	}
+	
+	/**
+	 * Get the pattern list iterator
+	 * @return iterator
+	 */
+	public Iterator<Pattern> getIterator() {
+		return _list.iterator();
 	}
     
     /**
      * Pattern List 
      */
-    private ArrayList<Pattern> _list = new ArrayList<Pattern>();
+    private List<Pattern> _list = new ArrayList<Pattern>();
 }
 
