@@ -126,7 +126,7 @@ public class Rprop extends AbstractAlgorithm {
     		}
     		
     		if (max_cycles != -1) {
-    			if (counter > max_cycles) {
+    			if (counter >= max_cycles) {
     				break;
     			}
     		}
