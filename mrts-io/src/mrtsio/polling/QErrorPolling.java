@@ -37,6 +37,6 @@ public class QErrorPolling {
 		
 		_last = (Long)list.get(list.size() - 1);
 		
-		return list.subList(0, list.size() - 1);
+		return list;
 	}
 }
