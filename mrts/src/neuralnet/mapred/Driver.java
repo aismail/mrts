@@ -56,12 +56,12 @@ public class Driver extends Configured implements Tool {
 	 */
 	public Driver() {
 		super();
-		_conx = new MrtsConnector();
-		_hash = new HashClient(_conx.getKeyspace());
-		_run_params = new RunParams();
 		_conf = new Configuration();
 		_conf.setBoolean("mapred.used.genericoptionparser", true);
 		super.setConf(_conf);
+		_conx = new MrtsConnector();
+		_hash = new HashClient(_conx.getKeyspace(), _conf.getClassLoader());
+		_run_params = new RunParams();
 	}
 	
 	/**
@@ -120,7 +120,8 @@ public class Driver extends Configured implements Tool {
 			Double oerr = (Double)_hash.get(MrtsConnector.NET_WGE_COLFAM,
 					0, // output errors row
 					anode.getId());
-			_logger.info("Output error: node = " + anode.getId() + " oerr = " + oerr.doubleValue());
+			_logger.info("Output error: node = " + anode.getId() + 
+					" oerr = " + oerr.doubleValue());
 			qerr += oerr.doubleValue();			
 		}
 		
@@ -131,10 +132,10 @@ public class Driver extends Configured implements Tool {
 	 * Push the network structure to the database
 	 * @param net_struct neural network structure
 	 */
-	private void pushNetStruct(NetworkStruct net_struct, RunParams run_params) {
+	private void pushNetStruct(NetworkStruct net_struct) {
 		_hash.put(MrtsConnector.NET_STRUCT_COLFAM, 
-				run_params.getExperimentName(), 
-				run_params.getNetworkName(),  
+				_run_params.getExperimentName(), 
+				_run_params.getNetworkName(),  
 				net_struct);
 	}
 	
@@ -148,6 +149,35 @@ public class Driver extends Configured implements Tool {
 				_run_params.getExperimentName(), 
 				timestamp, 
 				qerr);
+	}
+	
+	/**
+	 * Pull the neural net from cassandra and save it 
+	 * in a simple <<node1, node2> weight> format
+	 * @param network
+	 */
+	private void pullAndSaveNeuralNet(Network network) {	
+		_logger.info("Pull trained network from Cassandra ...");
+		
+		for (Arc arc : network.getArcs()) {
+			ArcValues wgd = (ArcValues) _hash.get(MrtsConnector.NET_WGE_COLFAM, 
+					arc.getInputNode().getId(), 
+					arc.getOutputNode().getId());
+			arc.setWeight(wgd.getWeight());
+		}
+		
+		_logger.info("Network pulled successfully");
+		
+		_logger.info("Saving neural network into a readable format ...");
+		
+		for (Arc arc : network.getArcs()) {
+			_hash.put(MrtsConnector.NET_SAVE_COLFAM, 
+					arc.getInputNode().getId(), 
+					arc.getOutputNode().getId(), 
+					arc.getWeight());
+		}
+		
+		_logger.info("Neural network saved succesfully");
 	}
 	
 	/**
@@ -202,7 +232,7 @@ public class Driver extends Configured implements Tool {
 		long te1, te2, tep, tt1, tt2, ttotal;
 		
 		NetworkStruct net_struct = _run_params.getNetStruct();
-		this.pushNetStruct(net_struct, _run_params);
+		this.pushNetStruct(net_struct);
 		
 		_logger.info("Network structure created & pushed to cassandra");
 		
@@ -261,9 +291,11 @@ public class Driver extends Configured implements Tool {
 			// Stop timer
 			te2 = System.currentTimeMillis();
 			
-			tep = (te2 - te1) / 1000;
+			// Computing epoch time (in ms)
+			tep = (te2 - te1);
+			
 			_logger.info("Epoch " + ep + " finnished with " + 
-					qerr + " qerr in " + tep + " sec");
+					qerr + " qerr in " + tep / (double)1000 + " sec");
 		}
 		
 		// Push -1 to QErr row
@@ -272,8 +304,16 @@ public class Driver extends Configured implements Tool {
 		// Stop timer
 		tt2 = System.currentTimeMillis();
 		
+		// Computing total time (in seconds)
 		ttotal = (tt2 - tt1) / 1000;
+		
 		_logger.info("Total train time: " + ttotal + " sec");
+		
+		/* Pull and save the neural net using a simple 
+		 * and readable format (used intensively by 
+		 * mrtsio.exporter)
+		 */
+		this.pullAndSaveNeuralNet(network);
 	}
 	
 	/**
