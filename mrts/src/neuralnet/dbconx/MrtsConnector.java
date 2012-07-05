@@ -30,7 +30,7 @@ public class MrtsConnector implements IConnector {
 		
 	public static final String NET_STRUCT_COLFAM = "NetStruct";
 	public static final String NET_WGE_COLFAM = "NetWGE";
-	public static final String NET_SER_COLFAM = "NetSer";
+	public static final String NET_SAVE_COLFAM = "NetSave";
 	public static final String NET_QERR_COLFAM = "NetQErr";
 	
 	// Private members
@@ -43,9 +43,9 @@ public class MrtsConnector implements IConnector {
 		public HConsistencyLevel get(OperationType op) {
 			switch (op) {
 			case READ:
-				return HConsistencyLevel.ONE;
+				return HConsistencyLevel.QUORUM;
 			case WRITE:
-				return HConsistencyLevel.ALL;
+				return HConsistencyLevel.QUORUM;
 			default:
 				return HConsistencyLevel.QUORUM;
 			}
@@ -53,7 +53,7 @@ public class MrtsConnector implements IConnector {
 
 		@Override
 		public HConsistencyLevel get(OperationType op, String cfName) {
-			return HConsistencyLevel.QUORUM;
+			return this.get(op);
 		}
 	}
 	
@@ -100,8 +100,8 @@ public class MrtsConnector implements IConnector {
 		
 		ColumnFamilyDefinition netSerCfDef = HFactory.createColumnFamilyDefinition(
 				keyspaceName, 
-				NET_SER_COLFAM,
-				ComparatorType.UTF8TYPE);	
+				NET_SAVE_COLFAM,
+				ComparatorType.INTEGERTYPE);	
 		
 		ColumnFamilyDefinition netQErrCfDef = HFactory.createColumnFamilyDefinition(
 				keyspaceName, 
@@ -116,8 +116,8 @@ public class MrtsConnector implements IConnector {
 		
 		_mrtsCluster.addKeyspace(ksDef, true);
 		
-		_keyspace = HFactory.createKeyspace(keyspaceName, _mrtsCluster);
-		_keyspace.setConsistencyLevelPolicy(new MrtsConsistencyLevel());
+		_keyspace = HFactory.createKeyspace(keyspaceName, _mrtsCluster, 
+				new MrtsConsistencyLevel());
 	}
 	
 	/**
