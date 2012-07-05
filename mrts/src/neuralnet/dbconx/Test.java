@@ -21,7 +21,7 @@ public class Test {
 		MrtsConnector conx = new MrtsConnector();
 		IHashClient hash = new HashClient(conx.getKeyspace());
 		
-		// Create and put net_struct
+		// Create and get net_struct
 		NetworkStruct net_struct; 
 		net_struct = (NetworkStruct)hash.get(MrtsConnector.NET_STRUCT_COLFAM, 
 						"experiment1", 
@@ -64,7 +64,7 @@ public class Test {
 			e.printStackTrace();
 		}
     	
-		// Print mean squared error (a.k.a quadratic loss)
+		// Print sum of squared error
 		System.out.println(qerr / (double)(network.getOutputNodes().length));
 	}
 }
