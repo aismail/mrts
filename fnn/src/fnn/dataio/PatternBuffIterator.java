@@ -99,8 +99,8 @@ public class PatternBuffIterator implements Iterator<Pattern>{
 				
 				System.out.println("Close file: " + _files[_currFile].getName());
 				_currReader.close();
-				_currReader = new CSVReader(new FileReader(_files[++_currFile])); 
-				System.out.println(_files[_currFile].getName());
+				_currReader = new CSVReader(new FileReader(_files[++_currFile]));
+				System.out.println("Open file: " + _files[_currFile].getName());
 				_currReader.readNext();
 			} 
 		}
