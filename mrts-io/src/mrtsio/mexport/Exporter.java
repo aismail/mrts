@@ -36,7 +36,7 @@ public class Exporter {
 		
 		// Pull the first layer of weights (input layer) 
 		for (AbstractNode node : network.getInputNodes()) {
-			map = hash.getRow(MrtsConnector.NET_SER_COLFAM, 
+			map = hash.getRow(MrtsConnector.NET_SAVE_COLFAM, 
 					node.getId(), 
 					node.getOutputArcs().size());
 			
@@ -49,7 +49,7 @@ public class Exporter {
 		// Pull the rest of the weights (middle layers)
 		for (AbstractNode[] nodes : network.getMiddleLayers()) {
 			for (AbstractNode node : nodes) {
-				map = hash.getRow(MrtsConnector.NET_SER_COLFAM, 
+				map = hash.getRow(MrtsConnector.NET_SAVE_COLFAM, 
 						node.getId(), 
 						node.getOutputArcs().size());
 				

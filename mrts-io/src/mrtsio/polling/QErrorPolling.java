@@ -31,12 +31,12 @@ public class QErrorPolling {
 	 * @param cnt maximum count
 	 * @return list of object representing 'cnt+1' qerrors
 	 */
-	public List<Object> getLastQErrors(String keyL, int cnt) {
-		List<Object> list = _hash.getTimestampSeries(
-				MrtsConnector.NET_QERR_COLFAM, keyL, _last, null, cnt + 1);
+	public List<Object> getLastQErrors(String keyL, int cnt, List<Long> tList) {
+		List<Object> eList = _hash.getTimestampSeries(MrtsConnector.NET_QERR_COLFAM, 
+				keyL, _last, null, cnt + 1, tList);
 		
-		_last = (Long)list.get(list.size() - 1);
+		_last = tList.get(tList.size() - 1);
 		
-		return list;
+		return eList;
 	}
 }
