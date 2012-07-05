@@ -43,7 +43,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	private Network _network;
 	private Text _nkey;
 	private RunParams _run_params;
-	private static Logger logger = LoggerFactory.getLogger(Map.class);
+	private static Logger _logger = LoggerFactory.getLogger(Map.class);
 	
 	/**
 	 * Default constructor
@@ -81,22 +81,43 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	private void initNetWeights(Network network) {
 		java.util.Map<Integer, Object> map;
 		
-		logger.info("Init weights");
-		logger.info("Hash UP: " + ((_hash == null) ? false : true));
-		logger.info("#Arcs " + network.getArcs().size());
+		_logger.info("Init weights");
+		_logger.info("Hash UP = " + ((_hash == null) ? false : true));
+		_logger.info("Arcs number is " + network.getArcs().size());
 		
 		for (AbstractNode node : network.getInputNodes()) {
 			map = _hash.getRow(MrtsConnector.NET_WGE_COLFAM, 
 					node.getId(), 
 					node.getOutputArcs().size());
 			
+			_logger.info("Node's arcs number is " + node.getOutputArcs().size());
+			_logger.info("Map for input node " + node.getId() + 
+					" received, size = " + map.size());
+			
 			for (Arc arc : node.getOutputArcs()) {
 				ArcValues wgd = (ArcValues)map.get(arc.getOutputNode().getId());
+				
+				// TO BE REPAIRED: incomplete row retrieval?!
+				// Happens just when the experiment is changed 
+				// and the schema isn't dropped
+				if (wgd == null) {
+					_logger.info("Wgd is null for arc: " +
+					+ arc.getInputNode().getId() + " - " +
+					+ arc.getOutputNode().getId());
+					_logger.info("Get the arc value again!");
+					
+					wgd = (ArcValues)_hash.get(MrtsConnector.NET_WGE_COLFAM, 
+							arc.getInputNode().getId(), 
+							arc.getOutputNode().getId());
+				}
+				
 				arc.setWeight(wgd.getWeight());	
 			}
+			
+			_logger.info("Weights for input node " + node.getId() + " initialized");
 		}
 		
-		logger.info("Input layer's weights initialized");
+		_logger.info("Input layer's weights initialized");
 		
 		for (AbstractNode[] nodes : network.getMiddleLayers()) {
 			for (AbstractNode node : nodes) {
@@ -104,14 +125,34 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 						node.getId(), 
 						node.getOutputArcs().size());
 				
+				_logger.info("Node's arcs number is " + node.getOutputArcs().size());
+				_logger.info("Map for middle node " + node.getId() + 
+						" received, size = " + map.size());
+				
 				for (Arc arc : node.getOutputArcs()) {
 					ArcValues wgd = (ArcValues)map.get(arc.getOutputNode().getId());
+					
+					// Happens just when the experiment is changed 
+					// and the schema isn't dropped
+					if (wgd == null) {
+						_logger.info("Wgd is null for arc: " +
+						+ arc.getInputNode().getId() + " - " +
+						+ arc.getOutputNode().getId());
+						_logger.info("Get the arc value again!");
+						
+						wgd = (ArcValues)_hash.get(MrtsConnector.NET_WGE_COLFAM, 
+								arc.getInputNode().getId(), 
+								arc.getOutputNode().getId());
+					}
+					
 					arc.setWeight(wgd.getWeight());	
 				}
+				
+				_logger.info("Weights for input node " + node.getId() + " initialized");
 			}
 		}
 		
-		logger.info("Middle layers' weights initialized");
+		_logger.info("Middle layers' weights initialized");
 	}
 	
 	/**
@@ -145,8 +186,8 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		// run network + train network
 		int limit = _pattern.size();
 		int success = 0;
-		long run_start, run_end, tot_run = 0, 
-			train_start, train_end, tot_train = 0;
+		long fwd_start, fwd_end, tot_fwd = 0, 
+			bwd_start, bwd_end, tot_bwd = 0;
 		double threshold = _net_struct.getThreshold();
 		
 		network.resetQError();
@@ -155,17 +196,17 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		for (int i = 0; i < limit; i++) {
 			Pattern pattern = _pattern.get(i);
 			
-			run_start = System.currentTimeMillis();
+			fwd_start = System.currentTimeMillis();
 			_network.runNetWork(pattern.getInput());
-			run_end = System.currentTimeMillis();
+			fwd_end = System.currentTimeMillis();
 			
-			tot_run += (run_end - run_start);
+			tot_fwd += (fwd_end - fwd_start);
 
-			train_start = System.currentTimeMillis();
+			bwd_start = System.currentTimeMillis();
 			double[] raw_results = _network.trainNetWork(pattern.getOutput());
-			train_end = System.currentTimeMillis();
+			bwd_end = System.currentTimeMillis();
 			
-			tot_train += (train_end - train_start);
+			tot_bwd += (bwd_end - bwd_start);
 			
 			// Just for self-checking
 			
@@ -185,8 +226,9 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 			}
 		}
 		
-		logger.info("Epoch finnised in " + tot_train + " ms, " +
-				"with qerr = " + _network.getQError());
+		_logger.info("Fwd time = " + tot_fwd);
+		_logger.info("Bwd time = " + tot_bwd);
+		_logger.info("Epoch finnished with qerr = " + _network.getQError());
 	
 		return success;
 	}
@@ -219,7 +261,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		// Read run parameters
 		this.readRunParams(context.getConfiguration());
 		
-		logger.info("Short run parameters read");
+		_logger.info("Short run parameters read");
 		
 		_net_struct = pullNetStruct(_run_params);
 	}
@@ -237,7 +279,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		this.initMap();
 		tend = System.currentTimeMillis();
 				
-		logger.info("Map function initialized in " + 
+		_logger.info("Map function initialized in " + 
 				(double)(tend - tstart) / 1000 + " sec");
 		
 		tstart = System.currentTimeMillis();
@@ -248,7 +290,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		}
 		tend = System.currentTimeMillis();
 		
-		logger.info("PatternList for network-train created in " + 
+		_logger.info("PatternList for network-train created in " + 
 				(double)(tend - tstart) / 1000 + " sec" +
 				", size is " + _pattern.size());
 		
@@ -257,7 +299,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		int success = this.runEpoch(_network);
 		tend = System.currentTimeMillis();
 		
-		logger.info("Epoch finnised with success rate " + success 
+		_logger.info("Epoch finnised with success rate " + success 
 				+ " out of " + _pattern.size() + " in " +
 				(double)(tend - tstart) / 1000 + " sec");
 		
@@ -267,12 +309,14 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		// PairDataWritable: N1 <N2 G>
 		for (Arc arc : _network.getArcs()) {
 			_nkey.set(new Text(arc.getInputNode().getId() + ""));
-			PairDataWritable pdw = new PairDataWritable(arc.getOutputNode().getId(), arc.getGradient());
+			PairDataWritable pdw = new PairDataWritable(
+					arc.getOutputNode().getId(),
+					arc.getGradient());
 			context.write(_nkey, pdw);
 		}
 		tend = System.currentTimeMillis();
 		
-		logger.info("Gradients sent in " +
+		_logger.info("Gradients sent in " +
 				(double)(tend - tstart) / 1000 + " sec");
 		
 		tstart = System.currentTimeMillis();
@@ -284,7 +328,7 @@ public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 		}
 		tend = System.currentTimeMillis();
 		
-		logger.info("OutputErrors sent in " + 
+		_logger.info("OutputErrors sent in " + 
 				(double)(tend - tstart) / 1000 + " sec");
 	}
 }
