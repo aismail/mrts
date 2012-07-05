@@ -28,7 +28,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	private IConnector _conx;
 	private IHashClient _hash;
 	private int _node;
-	private static Logger logger = LoggerFactory.getLogger(Reduce.class);
+	private static Logger _logger = LoggerFactory.getLogger(Reduce.class);
 	
 	/**
 	 * Default constructor
@@ -105,7 +105,10 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
     	}
 
 		curr_wgd = new ArcValues(weight, last_gradient, delta, deltaw);
-		_hash.put(MrtsConnector.NET_WGE_COLFAM, input_node, output_node, curr_wgd);
+		_hash.put(MrtsConnector.NET_WGE_COLFAM, 
+				input_node, 
+				output_node, 
+				curr_wgd);
 	}
 	
 	/**
@@ -114,7 +117,10 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 	 * @param oerr output error of node
 	 */
 	public void updateOutputError(int output_node, double oerr) {
-		_hash.put(MrtsConnector.NET_WGE_COLFAM, 0, output_node, oerr);
+		_hash.put(MrtsConnector.NET_WGE_COLFAM, 
+				0, 
+				output_node, 
+				oerr);
 	}
 	
 	/**
@@ -130,7 +136,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 		this.initReduce(key);
 		tend = System.currentTimeMillis();
 		
-		logger.info("Reduce function initialized for Node " + key.toString() +
+		_logger.info("Reduce function initialized for Node " + key.toString() +
 				" in " + (double)(tend - tstart) / 1000 + " sec");
 		
 		int cont = 0;
@@ -142,7 +148,7 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 		}
 		tend = System.currentTimeMillis();
 		
-		logger.info("Gradients/errors aggregated, list size " + cont + 
+		_logger.info("Gradients/errors aggregated, list size " + cont + 
 				" in " + (double)(tend - tstart) / 1000 + " sec");
 	
 		tstart = System.currentTimeMillis();
@@ -159,8 +165,8 @@ public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, Boo
 		}
 		tend = System.currentTimeMillis();
 		
-		logger.info("Map.entrySet size " + _sumup.entrySet().size());
-		logger.info("Data - weight & output error - updated in " + 
+		_logger.info("Map.entrySet size " + _sumup.entrySet().size());
+		_logger.info("Data - weight & output error - updated in " + 
 				(double)(tend - tstart) / 1000 + " sec");
 	}
 }
