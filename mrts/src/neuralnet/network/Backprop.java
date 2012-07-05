@@ -130,7 +130,7 @@ public class Backprop {
     		}
     		
     		if (max_cycles != -1) {
-    			if (counter > max_cycles) {
+    			if (counter >= max_cycles) {
     				break;
     			}
     		}
