@@ -231,7 +231,7 @@ public class HashClient implements IHashClient {
 	 */
 	@Override
 	public List<Object> getTimestampSeries(String colfamName, String keyL, 
-			Long k1, Long k2, int maxCount) {
+			Long k1, Long k2, int maxCount, List<Long> tList) {
 		List<Object> list = new ArrayList<Object>();
 
 		SliceQuery<String, Long, Object> sliceQuery = 
@@ -248,10 +248,9 @@ public class HashClient implements IHashClient {
 		while (csit.hasNext() && maxCount > 0) {
 			HColumn<Long, Object> hc = csit.next();	
 			list.add(hc.getValue());
-			k1 = hc.getName();
+			tList.add(hc.getName());
 			maxCount--;
 		}
-		list.add(k1);
 
 		return list;
 	}
