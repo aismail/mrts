@@ -17,7 +17,7 @@ public interface IHashClient {
 	public Map<Integer, Object> getPaginateRow(String colfamName, Integer keyL, int colsPageSize);
 	public Map<Integer, Map<Integer, Object>> getPaginateColFam(String colfamName, int rowsPageSize);
 	public List<Object> getTimestampSeries(String colfamName, String keyL, 
-			Long k1, Long k2, int maxCount);
+			Long k1, Long k2, int maxCount, List<Long> tList);
 	
 	// PUT methods
 	public void put(String colfamName, Integer keyL, Integer keyC, Object value);
