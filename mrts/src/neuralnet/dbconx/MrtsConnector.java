@@ -17,9 +17,9 @@ import me.prettyprint.hector.api.factory.HFactory;
 
 /**
  * Cassandra MRTS Database Connector
+ * Connection and keyspace creation
  * 
  * @author cbarca
- * @email cristi.barca@gmail.com
  */
 public class MrtsConnector implements IConnector {
 	// Constants
@@ -69,6 +69,8 @@ public class MrtsConnector implements IConnector {
 	 * Specialized constructor
 	 * @param clusterName virtual cluster name, just for inside-project use
 	 * @param clusterAddr the IPAddress:port of cluster
+	 * @param keyspaceName keyspace name
+	 * @param keyspaceRepFactor keyspace replication factor
 	 */
 	public MrtsConnector(String clusterName, String clusterAddr, 
 			String keyspaceName, int keyspaceRepFactor) {
@@ -86,6 +88,8 @@ public class MrtsConnector implements IConnector {
 	
 	/**
 	 * Creates the database schema (if is not yet created)
+	 * @param keyspaceName keyspace name
+	 * @param keyspaceRepFactor keyspace replication factor
 	 */
 	private void createSchema(String keyspaceName, int keyspaceRepFactor) {
 		ColumnFamilyDefinition netStructCfDef = HFactory.createColumnFamilyDefinition(

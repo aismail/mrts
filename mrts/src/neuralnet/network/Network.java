@@ -1,16 +1,13 @@
 package neuralnet.network;
 
-/**
- * Resilient Backpropagation Network Container.
- */
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Resilient backpropagation network container.
+ * Resilient Backpropagation network container (serializable),
+ * feedforward network
  * 
- * @author gsc
  * @author cbarca
  */
 public class Network implements Serializable {
@@ -264,6 +261,8 @@ public class Network implements Serializable {
     		_outputz[i].resetAggOutputError();
     	}
     }
+    
+    // Private members
     
     /**
      * Quadratic error of the network

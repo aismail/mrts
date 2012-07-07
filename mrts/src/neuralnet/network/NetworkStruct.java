@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Network Structure
- * Defines the structure of a feedforward neural network. 
+ * Defines the structure of a feedforward neural network (serializable)  
  * 
  * @author cbarca
  */

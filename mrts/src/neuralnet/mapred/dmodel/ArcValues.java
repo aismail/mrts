@@ -3,9 +3,9 @@ package neuralnet.mapred.dmodel;
 import java.io.Serializable;
 
 /**
- * Arc values class 
+ * Arc Values 
  * Stores 4 values (weight, gradient, delta, deltaw) 
- * important for weight update.
+ * important for weight update
  * 
  * @author cbarca
  */

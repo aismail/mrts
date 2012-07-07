@@ -15,6 +15,11 @@ import neuralnet.network.OutputNode;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
+/**
+ * Test class for network save (into NET_COLFAM_SAVE)
+ * 
+ * @author cbarca
+ */
 public class Save {
 
 	public static void main(String[] args) {

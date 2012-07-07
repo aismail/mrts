@@ -3,7 +3,6 @@ package neuralnet.network;
 /**
  * Concrete input node
  *
- * @author gsc
  * @author cbarca
  */
 public class InputNode extends AbstractNode {
@@ -29,6 +28,8 @@ public class InputNode extends AbstractNode {
 	public String toString() {
 		return ("InputNode:" + super.toString());
 	}
+	
+	// Private members
     
     /**
      * Eclipse generated 

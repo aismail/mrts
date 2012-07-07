@@ -3,13 +3,9 @@ package neuralnet.network;
 /**
  * Provide unique ID for arcs/nodes
  * 
- * @author gsc
  * @author cbarca
  */
 public class SequenceGenerator {
-	/**
-	 * TODO: to_be_removed when we move to _cluster_
-	 */
 	
     /**
      * Each arc/node has a unique identifier. 
@@ -26,6 +22,8 @@ public class SequenceGenerator {
     public static void reset() {
     	_id = 1;
     }
+    
+    // Private members
     
     /**
      * Contains the next Arc/Node identifier.

@@ -16,7 +16,9 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
 /**
- * Run parameters - map running parameters over XML config file
+ * Run Parameters 
+ * Read/write configuration parameters from/into a XML file
+ * 
  * @author cbarca
  */
 public class RunParams {

@@ -7,13 +7,13 @@ import java.io.IOException;
 import org.apache.hadoop.io.*;
 
 /**
- * Pair Data  
- * Hadoop Data Type, for value transfer to reducers.
+ * Pair Data Writable 
+ * Hadoop Data Type, for pair<key, value> transfers to reducers
  * 
  * @author cbarca
  */
 public class PairDataWritable implements Writable {
-
+	// Private members
 	private int _destination;
 	private double _value;
 	

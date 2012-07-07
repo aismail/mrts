@@ -5,7 +5,6 @@ import java.util.Iterator;
 /**
  * Concrete output node
  * 
- * @author gsc
  * @author cbarca
  */
 public class OutputNode extends AbstractNode {
@@ -159,6 +158,8 @@ public class OutputNode extends AbstractNode {
     	return (result);
     }
     
+    // Default (package) members
+    
     /**
      * Learning rate is used to help compute error term.
      */
@@ -178,6 +179,8 @@ public class OutputNode extends AbstractNode {
      * Aggregate output error
      */
     double agg_output_error = 0;
+    
+    // Private members
     
     /**
      * Eclipse generated

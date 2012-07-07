@@ -9,9 +9,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * Facade for Backpropagation neural network
+ * Backpropagation Algorithm
+ * Concrete class for Backpropagation algorithm
  *
- * @author gsc
  * @author cbarca
  */
 public class Backprop {
@@ -158,6 +158,8 @@ public class Backprop {
     	oos.writeObject(_network);
     	oos.close();
     }
+    
+    // Private members
     
     /**
      * Current backprop network

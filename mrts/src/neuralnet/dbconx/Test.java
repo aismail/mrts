@@ -14,6 +14,11 @@ import neuralnet.network.OutputNode;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
+/**
+ * Test class for network extraction (local save)
+ * 
+ * @author cbarca
+ */
 public class Test {
 
 	public static void main(String[] args) {

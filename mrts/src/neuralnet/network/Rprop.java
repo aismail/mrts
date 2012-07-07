@@ -9,9 +9,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * Facade for Resilient Backpropagation neural network
+ * Resilient Backpropagation Algorithm
+ * Concrete class for Rprop algorithm
  *
- * @author gsc
  * @author cbarca
  */
 public class Rprop {
@@ -147,6 +147,8 @@ public class Rprop {
     	oos.writeObject(_network);
     	oos.close();
     }
+    
+    // Private members
     
     /**
      * Current rprop network

@@ -5,7 +5,6 @@ import java.util.Iterator;
 /**
  * Concrete middle node
  *
- * @author gsc
  * @author cbarca
  */
 public class MiddleNode extends OutputNode {
@@ -58,6 +57,8 @@ public class MiddleNode extends OutputNode {
     public String toString() {
     	return (toString("MiddleNode:"));
     }
+    
+    // Private members
     
     /**
      * Eclipse generated

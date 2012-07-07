@@ -18,6 +18,12 @@ import cassdb.interfaces.IConnector;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
+/**
+ * Hadoop Reduce
+ * Updates the network's weights
+ * 
+ * @author cbarca
+ */
 public class Reduce extends Reducer<Text, PairDataWritable, BooleanWritable, BooleanWritable> {
 	// Constants
 	public static final double NPLUS = 1.2, NMINUS = 0.5, 

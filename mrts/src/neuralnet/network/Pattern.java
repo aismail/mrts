@@ -5,12 +5,13 @@ import java.io.Serializable;
 /**
  * Pattern container
  * 
- * @author gsc
  * @author cbarca
  */
 public class Pattern implements Serializable {
 
     /**
+     * Specialized constructor
+     * 
      * @param input input pattern
      * @param output output pattern
      */
@@ -90,6 +91,8 @@ public class Pattern implements Serializable {
 		}
 	}
     
+	// Private members
+	
     /**
      * Input pattern
      */

@@ -30,6 +30,12 @@ import cassdb.interfaces.IConnector;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
+/**
+ * Hadoop Map
+ * Trains the network using Rprop
+ * 
+ * @author cbarca
+ */
 public class Map extends Mapper<LongWritable, Text, Text, PairDataWritable>  {
 	// Constants
 	public static final String SPLIT_TOKEN = "#";

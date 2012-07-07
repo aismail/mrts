@@ -39,6 +39,12 @@ import cassdb.interfaces.IConnector;
 import cassdb.interfaces.IHashClient;
 import cassdb.internal.HashClient;
 
+/**
+ * Hadoop Driver
+ * Commands the Map-Reduce cycle
+ * 
+ * @author cbarca
+ */
 public class Driver extends Configured implements Tool {
 	// Constants
 	public final static String NAME_NODE = "hdfs://hadoop0.local:54310";
@@ -110,7 +116,7 @@ public class Driver extends Configured implements Tool {
 	
 	/**
 	 * Compute the mean squared error of the network (quadratic loss)
-	 * @param network neural-network (feedfwd)
+	 * @param network neural-network (feedforward)
 	 * @return mean squared error
 	 */
 	private double computeQError(Network network) {

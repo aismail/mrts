@@ -16,7 +16,6 @@ import java.util.List;
 /**
  * Pattern List
  * 
- * @author gsc
  * @author cbarca
  */
 public class PatternList {
@@ -102,6 +101,8 @@ public class PatternList {
 	public Iterator<Pattern> getIterator() {
 		return _list.iterator();
 	}
+	
+	// Private members
     
     /**
      * Pattern List 

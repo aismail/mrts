@@ -1,9 +1,10 @@
 package neuralnet.network;
 
 /**
+ * Neural Network Arc
  * Arcs connect nodes
+ * Extends AbstractArcNode
  *
- * @author gsc
  * @author cbarca
  */
 public class Arc extends AbstractArcNode {
@@ -153,6 +154,8 @@ public class Arc extends AbstractArcNode {
 		return (result);
 	}
     
+	// Private members
+	
     /**
      * Weights are initialized to a random value
      */    
@@ -185,13 +188,15 @@ public class Arc extends AbstractArcNode {
     private AbstractNode _out;
     
     /**
+     * Eclipse generated
+     */
+    private static final long serialVersionUID = -8884064153744639354L;
+    
+    // Constants
+    
+    /**
      * Rprop constants
      */
     public static final double NPLUS = 1.2, NMINUS = 0.5, 
     	DMAX = 50, DMIN = 1e-6;
-    
-    /**
-     * Eclipse generated
-     */
-    private static final long serialVersionUID = -8884064153744639354L;
 }
