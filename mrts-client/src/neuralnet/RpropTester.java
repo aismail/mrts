@@ -22,7 +22,7 @@ import fnn.util.RunParams;
 public class RpropTester implements ITester {
 	public static final String TEST_FILENAME_EXT = ".test";
 	public static final String RESULTS_FILENAME = "results.txt";
-	public static final String DEFAULT_TEST_PATH = "./dataset/iris/test";
+	public static final String DEFAULT_TEST_PATH = "./dataset/iono/test";
 	
 	private RunParams _runParams;
 	private IClassifier _rpClassifier;
@@ -105,7 +105,7 @@ public class RpropTester implements ITester {
 	}
 
 	/** 
-	 * Submit these points to the network for classification.
+	 * Submit these points to the network for classification
 	 */
 	public void performTesting() {
 		BufferedWriter bw;

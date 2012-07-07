@@ -183,7 +183,7 @@ public class NeuralNetCmdBarController {
 	}
 
 	/**
-	 * Hook class - window listener (on window closing)
+	 * Hook class - window listener (on window close)
 	 * @author cbarca
 	 */
 	public class CloseViewMonitor implements WindowListener {

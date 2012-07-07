@@ -4,8 +4,10 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 /**
- * Data model for SumOfSquaredError list pulled from
- * Cassandra Database while performing the neural net training
+ * Data model for SumOfSquaredError values
+ * (use: JList Data Model)
+ * SSE value are pulled from Cassandra Database 
+ * while performing the neural net training
  * 
  * @author cbarca
  */

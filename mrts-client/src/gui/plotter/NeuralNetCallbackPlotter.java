@@ -12,9 +12,10 @@ import gui.dmodel.ResponseListModel;
 
 /**
  * Neural net callback plotter class - implements ICallbackPloter
- * interface from 'fnn' module for plotting the error line (described
- * by the sum of squared error value received), some extra features added
- * for listing (in the same time) the values into a JList container
+ * interface from 'fnn' module for plotting the error curve/line 
+ * (the curve is described by the sum of squared error values), 
+ * Some extra features are added for listing the values into a JList container
+ * in the same time with curve drawing
  * 
  * @author cbarca
  */

@@ -15,9 +15,9 @@ public class NeuralNetTestDriver {
 	
 	public static void main(String[] args) 
 		throws IOException, ClassNotFoundException {
-		NeuralNet nn = new NeuralNet("iris_run.xml");
+		NeuralNet nn = new NeuralNet("iono_run.xml");
 		
-		ITester tester = new RpropTester(nn.getRunParams(), NeuralNet.RunMode.LocalIris);
+		ITester tester = new RpropTester(nn.getRunParams(), NeuralNet.RunMode.LocalIono);
 		nn.setLocalTester(tester);
 		tester.performTesting();
 	}

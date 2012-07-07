@@ -9,6 +9,7 @@ import org.jfree.ui.RefineryUtilities;
 
 /**
  * Application window class - creates a separate/independently JFrame window
+ * Multiple usage (we use for error chart drawing into a separate window - Monitor Window)
  * 
  * @author cbarca
  */
