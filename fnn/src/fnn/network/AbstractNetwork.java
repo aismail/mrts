@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Abstract class for neural feedforward network
+ * Abstract Network 
+ * Abstract class for feedforward neural network type
  * 
  * @author cbarca
  */
@@ -180,6 +181,8 @@ public abstract class AbstractNetwork implements Serializable {
     	}
     }
     
+    // Protected members
+    
     /**
      * Quadratic error of the network
      */
@@ -210,6 +213,8 @@ public abstract class AbstractNetwork implements Serializable {
      */
     protected double _learning_rate = 1.0, 
     	_momentum = 0;
+    
+    // Private members
     
     /**
 	 * Eclipse generated 

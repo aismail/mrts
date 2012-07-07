@@ -7,7 +7,9 @@ import fnn.util.SequenceGenerator;
 
 
 /**
- * Backpropagation network container.
+ * Backpropagation Network (feedforward network)
+ * Backpropagation network container
+ * Extends the AbstractNetwork class 
  * 
  * @author cbarca
  */
@@ -90,6 +92,8 @@ public class BackpropNetwork extends AbstractNetwork {
     		}
     	}	
     }
+	
+	// Private members
 	
 	/**
 	 * Eclipse generated

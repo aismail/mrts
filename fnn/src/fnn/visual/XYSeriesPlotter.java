@@ -11,6 +11,12 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+/**
+ * XY Series Plotter
+ * XY series/curve drawing implementation
+ * 
+ * @author cbarca
+ */
 public class XYSeriesPlotter implements IPlotter {
 	public static final Dimension DEFAULT_DIMENSION = new Dimension(600, 600);
 	private double[] _buff_xvals, _buff_yvals;

@@ -1,7 +1,9 @@
 package fnn.network;
 
 /**
+ * Backpropagation Arc
  * Concrete class for Backpropagation network arc
+ * Extends the AbstractArc class
  * 
  * @author cbarca
  */

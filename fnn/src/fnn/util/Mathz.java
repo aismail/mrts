@@ -1,8 +1,5 @@
 package fnn.util;
 
-/**
- * Math support, all static methods
- */
 import java.util.Random;
 
 /**
@@ -56,6 +53,8 @@ public class Mathz {
 	
     	return(result);
     }
+    
+    // Private members
     
     /**
      * Duh.

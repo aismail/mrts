@@ -102,6 +102,8 @@ public class PatternList {
 		return _list.iterator();
 	}
     
+	// Private members
+	
     /**
      * Pattern List 
      */

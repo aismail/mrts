@@ -7,7 +7,9 @@ import fnn.util.SequenceGenerator;
 
 
 /**
- * Resilient backpropagation network container.
+ * Resilient Backpropagation Network
+ * Resilient Backpropagation network container
+ * Extends the AbstractNetwork class
  * 
  * @author cbarca
  */
@@ -85,6 +87,8 @@ public class RpropNetwork extends AbstractNetwork {
     	}	
     }
         
+	// Private members
+	
     /**
      * Eclipse generated
      */

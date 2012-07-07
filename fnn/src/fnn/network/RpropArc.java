@@ -1,7 +1,9 @@
 package fnn.network;
 
 /**
+ * Resilient Backpropagation Arc
  * Concrete class for Resilient Backpropagation network arc
+ * Extends the AbstractArc class
  *
  * @author cbarca
  */
@@ -74,6 +76,8 @@ public class RpropArc extends AbstractArc {
 		return (result);
 	}
     
+	// Private members
+	
     /**
      * Gradients (batch mode)
      */

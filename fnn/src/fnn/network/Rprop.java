@@ -14,7 +14,9 @@ import fnn.util.Mathz;
 import fnn.visual.ICallbackPlotter;
 
 /**
- * Facade for Rprop neural network
+ * Resilient Backpropagation Algorithm
+ * Concrete class for Rprop algorithm
+ * Extends the AbstractAlgorithm class
  *
  * @author cbarca
  */

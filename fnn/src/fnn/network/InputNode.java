@@ -29,6 +29,8 @@ public class InputNode extends AbstractNode {
 		return ("InputNode:" + super.toString());
 	}
     
+	// Private members
+	
     /**
      * Eclipse generated 
      */

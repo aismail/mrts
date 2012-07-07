@@ -6,7 +6,9 @@ import fnn.util.SequenceGenerator;
 
 
 /**
- * Abstract parent for arcs and nodes
+ * Abstract ArcNode
+ * Abstract top class for arcs and nodes (serializable)
+ * Both, arcs and nodes, have in common consecutive id numbers 
  *
  * @author cbarca
  */
@@ -25,6 +27,8 @@ public abstract class AbstractArcNode implements Serializable {
      */
     final int id = SequenceGenerator.getId();
 
+    // Private members
+    
     /**
 	 * Eclipse generated
 	 */

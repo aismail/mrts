@@ -15,7 +15,8 @@ import au.com.bytecode.opencsv.CSVWriter;
  * @author cbarca
  */
 public class CsvToPatternList {
-	PatternList _pl;
+	// Private members
+	private PatternList _pl;
 	
 	/**
 	 * Default constructor
@@ -31,7 +32,6 @@ public class CsvToPatternList {
 	 * @param outputpop number of data used for network's output
 	 * @param out_filename output path (for .trn serialized file)
 	 * @param normalize true if normalize / false either
-	 * @param negative true if data contain negative values / false either
 	 * @return pattern list
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -43,15 +43,14 @@ public class CsvToPatternList {
 	}
 	
 	/**
-	 * Read CSV files from a directory and copy them in a pattern list
+	 * Read CSV files from a directory and convert/copy them in a pattern list
 	 * @param dir_path directory path
 	 * @param inputpop number of data used for network's input
 	 * @param outputpop number of data used for network's output
 	 * @param out_filename output filename (for .trn serialized file)
 	 * @param normalize true if normalize / false either
-	 * @param negative true if data contain negative values / false either
 	 * @param save true if we want to save the data to CSV (usually after normalization)
-	 * @return pattern list
+	 * @return the conversion into pattern list 
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -129,9 +128,9 @@ public class CsvToPatternList {
 	/**
 	 * Normalize data
 	 * @param pl pattern list
-	 * @param norm norm value
-	 * @param negative 
-	 * @return true if data contain negative values / false either
+	 * @param norm norm value 
+	 * @param negative list (flags for columns which contain negative columns)
+	 * @return normalized pattern list
 	 */
 	public static PatternList normalize(PatternList pl, double[] norm, boolean[] negative) {
 		for (int i = 0; i < pl.size(); i++) {

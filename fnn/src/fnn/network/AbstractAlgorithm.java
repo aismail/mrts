@@ -9,6 +9,12 @@ import java.io.ObjectOutputStream;
 import fnn.dataio.PatternList;
 import fnn.visual.ICallbackPlotter;
 
+/**
+ * Abstract Algorithm 
+ * Abstract class which defines a neural network algorithm
+ * 
+ * @author cbarca
+ */
 public abstract class AbstractAlgorithm {
 	
 	/**
@@ -43,6 +49,8 @@ public abstract class AbstractAlgorithm {
     	oos.writeObject(_network);
     	oos.close();
     }
+    
+    // Protected members
     
     /**
      * Current network

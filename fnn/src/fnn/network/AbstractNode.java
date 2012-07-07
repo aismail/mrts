@@ -5,7 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Abstract parent for nodes
+ * Abstract Node
+ * Abstract class for neural network's nodes
  * 
  * @author cbarca
  */
@@ -95,6 +96,8 @@ public abstract class AbstractNode extends AbstractArcNode {
     			+ input_arcs.size() + " output:" + output_arcs.size());
     }
     
+    // Default (package) members
+    
     /**
      * Error for this node
      */
@@ -114,6 +117,8 @@ public abstract class AbstractNode extends AbstractArcNode {
      * Output arcs
      */
     List<AbstractArc> output_arcs = new ArrayList<AbstractArc>();	
+    
+    // Private members
     
     /**
 	 * Eclipse generated 

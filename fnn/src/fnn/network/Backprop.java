@@ -14,7 +14,9 @@ import fnn.util.Mathz;
 import fnn.visual.ICallbackPlotter;
 
 /**
- * Facade for Backpropagation neural network
+ * Backpropagation Algorithm
+ * Concrete class for Backpropagation algorithm
+ * Extends the AbstractAlgorithm class
  *
  * @author cbarca
  */

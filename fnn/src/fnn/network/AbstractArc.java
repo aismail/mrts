@@ -3,7 +3,8 @@ package fnn.network;
 import fnn.util.Mathz;
 
 /**
- * Abstract class for arc connection
+ * Abstract Arc
+ * Abstract class for arc connection (network's synapses)
  * 
  * @author cbarca
  */
@@ -107,6 +108,8 @@ public abstract class AbstractArc extends AbstractArcNode {
     @Override
 	public abstract String toString();
     
+    // Protected members
+    
     /**
      * Weights are initialized to a random value
      */    
@@ -136,6 +139,8 @@ public abstract class AbstractArc extends AbstractArcNode {
      * AbstractNode which arc is going to
      */
     protected AbstractNode _out;
+    
+    // Private members
     
     /**
 	 * Eclipse generated 

@@ -58,6 +58,8 @@ public class MiddleNode extends OutputNode {
     	return (toString("MiddleNode:"));
     }
     
+    // Private members
+    
     /**
      * Eclipse generated
      */

@@ -8,6 +8,12 @@ import java.util.Iterator;
 
 import au.com.bytecode.opencsv.CSVReader;
 
+/**
+ * Pattern Buffer Iterator
+ * Iterate and read files' contents (training vectors) from a given directory
+ * 
+ * @author cbarca
+ */
 public class PatternBuffIterator implements Iterator<Pattern>{
 	private PatternList _pl;
 	private int _buffSize, _currFile, _nin, _nout;

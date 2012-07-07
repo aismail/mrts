@@ -2,17 +2,10 @@ package fnn.util;
 
 /**
  * Provide unique ID for arcs/nodes
- */
-
-/**
- * Provide unique ID for arcs/nodes
  * 
  * @author cbarca
  */
 public class SequenceGenerator {
-	/**
-	 * TODO: to_be_removed when we move to _cluster_
-	 */
 	
     /**
      * Each arc/node has a unique identifier. 
@@ -29,6 +22,8 @@ public class SequenceGenerator {
     public static void reset() {
     	_id = 1;
     }
+    
+    // Private members
     
     /**
      * Contains the next Arc/Node identifier.

@@ -10,6 +10,8 @@ import java.io.Serializable;
 public class Pattern implements Serializable {
 
     /**
+     * Specialized construtor
+     * 
      * @param input input pattern
      * @param output output pattern
      */
@@ -89,6 +91,8 @@ public class Pattern implements Serializable {
 		}
 	}
     
+	// Pattern members
+	
     /**
      * Input pattern
      */
