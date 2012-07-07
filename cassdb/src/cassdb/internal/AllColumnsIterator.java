@@ -8,7 +8,17 @@ import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.exceptions.HectorException;
 import me.prettyprint.hector.api.query.SliceQuery;
 
+/**
+ * Columns Iterator
+ * Iterate through columns of Cassandra database 
+ * 
+ * @author cbarca
+ *
+ * @param <N>
+ * @param <V>
+ */
 public class AllColumnsIterator<N, V> implements Iterator<HColumn<N, V>> {
+	// Private members
 	private N _start;
 	private int _count;
 	private Iterator<HColumn<N, V>> _columnsIterator;
@@ -23,10 +33,18 @@ public class AllColumnsIterator<N, V> implements Iterator<HColumn<N, V>> {
 		_isLastIteration = false;
 	}
 
+	/**
+	 * Return the iterator
+	 * @return iterator (this)
+	 */
 	public Iterator<HColumn<N, V>> iterator() {
 		return this;
 	}
 
+	/**
+	 * Iterator has next method
+	 * @return true/false - if a next value exists
+	 */
 	public boolean hasNext() {
 		if (_columnsIterator == null || !_columnsIterator.hasNext()) {
 			if (_isLastIteration) {
@@ -40,10 +58,18 @@ public class AllColumnsIterator<N, V> implements Iterator<HColumn<N, V>> {
 		return true;
 	}
 
+	/**
+	 * Iterator next method
+	 * @return Cassandra column structure
+	 */
 	public HColumn<N, V> next() {
 		return _columnsIterator.next();
 	}
 
+	/**
+	 * Iterator fetch more method
+	 * @return true/false - if is possible to fetch more columns
+	 */
 	private boolean fetchMore() {
 		try {
 			_query.setRange(_start, null, false, _count);
@@ -72,6 +98,9 @@ public class AllColumnsIterator<N, V> implements Iterator<HColumn<N, V>> {
 		}
 	}
 
+	/**
+	 * Iterator remove method (unsupported)
+	 */
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}

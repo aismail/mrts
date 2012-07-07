@@ -51,10 +51,11 @@ public class HashClient implements IHashClient {
 	}
 
 	/**
-	 * Get the values from colfamName<keyL>
+	 * Get the the row<keyL> from colfamName
 	 * @param colfamName column family name
-	 * @param keyL line key
-	 * @return map of <keyC, value> from row keyL
+	 * @param keyL line/row key
+	 * @param rowSize row size
+	 * @return map of <keyC, value> from line/row keyL
 	 */
 	@Override
 	public Map<Integer, Object> getRow(String colfamName, Integer keyL, int rowSize) {
@@ -227,7 +228,9 @@ public class HashClient implements IHashClient {
 	 * @param keyL row key
 	 * @param k1 begin column key (begin timestamp)
 	 * @param k2 end column key (end timestamp)
-	 * @param maxc max columns	 
+	 * @param maxCount max columns
+	 * @param tList the list where to put cluster's timestamps
+	 * @return the objects' list between k1 and k2 (maxCount objects) 	 
 	 */
 	@Override
 	public List<Object> getTimestampSeries(String colfamName, String keyL, 
@@ -260,6 +263,7 @@ public class HashClient implements IHashClient {
 	 * @param colfamName column family name
 	 * @param keyL line key
 	 * @param keyC column key
+	 * @param value object value to put at colfamName<keyL, keyC>
 	 */
 	@Override
 	public void put(String colfamName, Integer keyL, Integer keyC, Object value) {
@@ -274,6 +278,7 @@ public class HashClient implements IHashClient {
 	 * @param colfamName column family name
 	 * @param keyL line key
 	 * @param keyC column key
+	 * @param value object value to put at colfamName<keyL, keyC>
 	 */
 	@Override
 	public void put(String colfamName, String keyL, Long keyC, Object value) {
@@ -288,6 +293,7 @@ public class HashClient implements IHashClient {
 	 * @param colfamName column family name
 	 * @param keyL line key
 	 * @param keyC column key
+	 * @param value object value to put at colfamName<keyL, keyC>
 	 */
 	@Override
 	public void put(String colfamName, String keyL, String keyC, Object value) {
@@ -298,7 +304,7 @@ public class HashClient implements IHashClient {
 	}
 
 	/**
-	 * Start batch put session
+	 * Start batch-put session
 	 */
 	@Override
 	public void startBatchPut() {
@@ -306,10 +312,11 @@ public class HashClient implements IHashClient {
 	}
 
 	/**
-	 * Batch version of put operation
+	 * Perform batch-puts
 	 * @param colfamName column family name
 	 * @param keyL line key
 	 * @param keyC column key
+	 * @param value object value to put at colfamName<keyL, keyC>
 	 */
 	@Override
 	public void batchPut(String colfamName, Integer keyL, Integer keyC, Object value) {
@@ -318,7 +325,7 @@ public class HashClient implements IHashClient {
 	}
 
 	/**
-	 * Finalize batch put session
+	 * Finalize batch-put session
 	 */
 	@Override
 	public void finalizeBatchPut() {

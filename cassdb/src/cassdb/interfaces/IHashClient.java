@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface for Hash Client
+ * Interface for Hash Client (CRUD operations)
  * 
  * @author cbarca
  */
 public interface IHashClient {
-	// GET methods
+	// GET methods (R)
 	public Object get(String colfamName, Integer keyL, Integer keyC);
 	public Object get(String colfamName, String keyL, Long keyC);
 	public Object get(String colfamName, String keyL, String keyC);
@@ -19,7 +19,7 @@ public interface IHashClient {
 	public List<Object> getTimestampSeries(String colfamName, String keyL, 
 			Long k1, Long k2, int maxCount, List<Long> tList);
 	
-	// PUT methods
+	// PUT methods (C/U)
 	public void put(String colfamName, Integer keyL, Integer keyC, Object value);
 	public void put(String colfamName, String keyL, Long keyC, Object value);
 	public void put(String colfamName, String keyL, String keyC, Object value);
@@ -27,7 +27,7 @@ public interface IHashClient {
 	public void batchPut(String colfamName, Integer keyL, Integer keyC, Object value);
 	public void finalizeBatchPut();
 	
-	// REMOVE methods
+	// REMOVE methods (D)
 	public void remove(String colfamName, Integer keyL, Integer keyC);
 	public void remove(String colfamName, String keyL, Long keyC);
 	public void remove(String colfamName, String keyL, String keyC);	
