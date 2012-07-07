@@ -17,7 +17,6 @@ import me.prettyprint.hector.api.factory.HFactory;
  * Cassandra Training Database Connector
  * 
  * @author cbarca
- * @email cristi.barca@gmail.com
  */
 public class DataConnector implements IConnector {
 	// Constants
@@ -42,7 +41,8 @@ public class DataConnector implements IConnector {
 	 * Specialized constructor
 	 * @param clusterName virtual cluster name, just for inside-project use
 	 * @param clusterAddr the IPAddress:port of cluster
-	 * @param colfamName train data column family name
+	 * @param keyspaceName keyspace name
+	 * @param keyspaceRepFactor keyspace replication factor
 	 */
 	public DataConnector(String clusterName, String clusterAddr, 
 			String keyspaceName, String colfamName) {
@@ -71,6 +71,8 @@ public class DataConnector implements IConnector {
 	
 	/**
 	 * Creates the database schema (if is not yet created)
+	 * @param keyspaceName keyspace name
+	 * @param keyspaceRepFactor keyspace replication factor
 	 */
 	private void createSchema(String keyspaceName, String colfamName) {
 		ColumnFamilyDefinition trainDataCfDef = HFactory.createColumnFamilyDefinition(

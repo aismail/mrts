@@ -7,7 +7,8 @@ import cassdb.internal.HashClient;
 import mrtsio.dbconx.MrtsConnector;
 
 /**
- * Mean squared error polling class
+ * Polling mechanism (get last N values from timestamps series)
+ * Training-error extraction (for real time chart drawing)
  * 
  * @author cbarca
  */

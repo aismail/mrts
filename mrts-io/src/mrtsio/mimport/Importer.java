@@ -14,8 +14,7 @@ import cassdb.internal.HashClient;
 import mrtsio.dbconx.DataConnector;
 
 /**
- * Static class importer - import training data set 
- * into on of:
+ * Static importer class - import training datasets into:
  * 	1) Cassandra
  *  2) HDFS
  *  *) keyspace is defined in connector
@@ -90,8 +89,9 @@ public class Importer {
 	/**
 	 * Import training data set to cassandra column family
 	 * @param dir_path directory path
-	 * @param colfam column family name
-	 * @param row_size number of training vectors
+	 * @param hdfs_path path to HDFS
+	 * @param chunk_size chunk size (size in training vectors' numbers)
+	 * @param file_size number of chunks in a file
 	 * @throws IOException
 	 */
 	public static void importTrainingDataToHDFS(String dir_path, 
